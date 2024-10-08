@@ -10,31 +10,79 @@ class DashboardScreen extends StatelessWidget {
         child: Column(
           children: [
           //tabs
-          Row(
-            children: [
-              Text("all"),
-              Text("water"),
-              Text("feeds"),
-            ],
+          Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text("all"),
+                Text("water"),
+                Text("feeds"),
+              ],
+            ),
           ),
           //main dashboard
           Row(
             children: [
               Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 //feed
               children: [
-              Text ("feeds"),
-              Text ("feed illustration"),
-              Text ("amount of feeds"),
-              Text ("control"),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                 child: const SizedBox(
+                  width: 300,
+                  height: 40,
+                  child: Text('Feeds'),
+                ),
+              ),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                 child: const SizedBox(
+                  width: 300,
+                  height: 100,
+                  child: Text('Feed Levels'),
+                ),
+              ),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                 child: const SizedBox(
+                  width: 300,
+                  height: 100,
+                  child: Text('Amount Dispensed'),
+                ),
+              ),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                 child: const SizedBox(
+                  width: 300,
+                  height: 100,
+                  child: Text('Control Feeding'),
+                ),
+              ),
                 
               ],
               ),
               Column(
+                mainAxisAlignment: MainAxisAlignment.start,
             //water quality
               children: [
-              Text ("water"),
-              Text ("water cards"),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                 child: const SizedBox(
+                  width: 300,
+                  height: 100,
+                  child: Text('Water Quality'),
+                ),
+              ),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                 child: const SizedBox(
+                  width: 300,
+                  height: 100,
+                  child: Text('Water Cards'),
+                ),
+              ),
                 
               ],
               ),
