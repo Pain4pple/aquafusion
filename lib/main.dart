@@ -1,3 +1,4 @@
+import 'package:aquafusion/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,7 +19,9 @@ import 'pages/feeding_table_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Initialize Firebase here
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  ); // Initialize Firebase here
   runApp(const MyApp());
 }
 
