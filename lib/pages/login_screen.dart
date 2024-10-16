@@ -1,7 +1,25 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
+import 'register_screen.dart';
+import 'forgot_password_screen.dart';
+import 'welcome_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
+  void _login(BuildContext context) async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final user = await _authService.login(email, password);
+
+    if (user != null) {
+      Navigator.pushReplacementNamed(context, '/welcome');
+    } else {
+      // Show error to the user
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +30,7 @@ class LoginScreen extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/background.png'),
+                image: AssetImage('assets/background.jpg'),
                 fit: BoxFit.cover,
               ),
             ),

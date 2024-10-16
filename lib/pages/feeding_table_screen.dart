@@ -1,6 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/firestore_service.dart';
 
 class FeedingTableScreen extends StatelessWidget {
+  final FirestoreService _firestoreService = FirestoreService();
+  String? selectedFeedingTable;
+
+  void _saveFeedingTableSelection(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null && selectedFeedingTable != null) {
+      await _firestoreService.addSetupData(user.uid, {
+        'selectedFeedingTable': selectedFeedingTable,
+        'updatedAt': Timestamp.now(),
+      });
+      Navigator.pushNamed(context, '/nextScreen');  
+    } else {
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,14 +57,12 @@ class FeedingTableScreen extends StatelessWidget {
                   DropdownMenuItem(value: "Table2", child: Text("Other Feeding Table")),
                 ],
                 onChanged: (value) {
-                  // Handle dropdown selection
                 },
                 hint: Text("Select Feeding Table"),
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Proceed to next action
                 },
                 child: Text("Proceed"),
                 style: ElevatedButton.styleFrom(

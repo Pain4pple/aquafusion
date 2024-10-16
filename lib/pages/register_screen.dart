@@ -1,13 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
+import '../services/firestore_service.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final AuthService _authService = AuthService();
+  final FirestoreService _firestoreService = FirestoreService();
 
-  void _register(BuildContext context) {
-    // Perform registration logic here (e.g., form validation, API call)
-    // Assuming registration is successful, navigate to the WelcomeScreen
+  void _register(BuildContext context) async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final name = _nameController.text.trim();
 
-    Navigator.pushReplacementNamed(context, '/welcome');
+    final user = await _authService.register(email, password);
+
+    if (user != null) {
+      await _firestoreService.addUserData(user.uid, {
+        'name': name,
+        'email': email,
+        'createdAt': Timestamp.now(),
+      });
+      Navigator.pushReplacementNamed(context, '/welcome');
+    } else {
+    }
   }
 
   @override
@@ -19,7 +37,7 @@ class RegisterScreen extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/background.png'),
+                image: AssetImage('assets/background.jpg'),
                 fit: BoxFit.cover,
               ),
             ),

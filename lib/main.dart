@@ -36,8 +36,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue),
       initialRoute: '/login',
       routes: {
-        '/login': (context) => const LoginScreen(),
-        '/register': (context) => const RegisterScreen(),
+        '/login': (context) => LoginScreen(),
+        '/register': (context) => RegisterScreen(),
         '/forgot_password': (context) => const ForgotPasswordScreen(),
         '/welcome': (context) => WelcomeScreen(),
         '/setup': (context) => SetupScreen(),
