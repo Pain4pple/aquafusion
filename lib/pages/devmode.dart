@@ -10,7 +10,7 @@ class DevMode extends StatefulWidget {
 class _DevModeState extends State<DevMode> {
   final TextEditingController _feedAmountController = TextEditingController();
   MqttServerClient? _client;
-  String broker = '192.168.254.131'; // e.g., 'test.mosquitto.org'
+  String broker = 'aquafusion'; // e.g., 'test.mosquitto.org'
   String topic = 'aquafusion/manual_feed';
 
   @override
