@@ -10,7 +10,7 @@ class DevMode extends StatefulWidget {
 class _DevModeState extends State<DevMode> {
   final TextEditingController _feedAmountController = TextEditingController();
   MqttServerClient? _client;
-  String broker = 'your-mqtt-broker'; // e.g., 'test.mosquitto.org'
+  String broker = '192.168.254.131'; // e.g., 'test.mosquitto.org'
   String topic = 'aquafusion/manual_feed';
 
   @override
@@ -60,6 +60,17 @@ class _DevModeState extends State<DevMode> {
       print('MQTT client is not connected');
     }
   }
+   void publishMessage(String message) {
+    if (_client!.connectionStatus!.state == MqttConnectionState.connected) {
+      final builder = MqttClientPayloadBuilder();
+      builder.addString(message);
+      _client!.publishMessage('led/control', MqttQos.exactlyOnce, builder.payload!);
+      print('Message published: $message');
+    } else {
+      print('Cannot publish message, client is not connected.');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,18 +78,16 @@ class _DevModeState extends State<DevMode> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: _feedAmountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Enter Feed Amount (g)',
-              ),
-            ),
-            SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _publishFeedAmount,
-              child: Text('Trigger Manual Feeding'),
+              onPressed: () => publishMessage('ON'),
+              child: Text('Turn LED ON'),
+            ),
+            ElevatedButton(
+              onPressed: () => publishMessage('OFF'),
+              onLongPress: () => publishMessage('HEHEHHE'),
+              child: Text('Turn LED OFF'),
             ),
           ],
         ),

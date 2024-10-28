@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,8 +9,13 @@ import 'pages/feedingpage.dart';
 import 'pages/exportreport.dart';
 import 'pages/devmode.dart';
 import 'pages/settings.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
 
-void main() => runApp(MyApp());
+void main() {
+  HttpOverrides.global = MyHttpOverrides();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -17,6 +24,14 @@ class MyApp extends StatelessWidget {
       title: 'AquaFusion',
       home: HomeScreen(),
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
 
