@@ -4,9 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService{
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   
-  UserModel? _userFromFirebase(User user){
+  UserModel? _userFromFirebase(User? user){
     return user != null ? UserModel(uid: user.uid) : null;
   }
+
+  //auth change user stream
+  Stream<UserModel?> get user {
+    return _firebaseAuth.authStateChanges().map(_userFromFirebase);
+  }
+
+
   //sign in anonymously
   Future signInAnon() async{
     try{
@@ -22,5 +29,12 @@ class AuthService{
   //sign in with email n pass
   //register with email n pass
   //sign out
-
+  Future signOut() async{
+    try{
+      return await _firebaseAuth.signOut();
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
 }

@@ -1,3 +1,5 @@
+import 'package:aquafusion/screens/home/components/logout.dart';
+import 'package:aquafusion/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -30,6 +32,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _selectedPageIndex = 0;
+  final AuthService _firebaseAuth = AuthService();
 
   // Pages for navigation
   final List<Widget> _pages = [
@@ -74,6 +77,11 @@ class _HomeState extends State<Home> {
                 _buildNavItem(Icons.note, 'Reports', 2),
                 _buildNavItem(Icons.developer_mode_rounded, 'Dev Mode', 3),
                 _buildNavItem(Icons.settings, 'Settings', 4),
+                LogoutButton(
+                  icon: Icons.logout,
+                  title: 'Logout',
+                  firebaseAuth: _firebaseAuth,
+                ),
               ],
             ),
           ),
@@ -157,4 +165,31 @@ class _HomeState extends State<Home> {
     );
   }
 
+    Widget _logout(IconData icon, String title) {
+    return GestureDetector(
+      onTap: () async{
+        await _firebaseAuth.signOut();
+      },
+      
+      child: Container(
+        color: Colors.red.withOpacity(0),
+        padding: EdgeInsets.all(15),
+        width: 100,
+        child: Column(
+          children: <Widget>[
+            Icon(icon, color: Colors.white),
+            SizedBox(width: 16),
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
 }

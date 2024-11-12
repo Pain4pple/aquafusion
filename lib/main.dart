@@ -1,13 +1,16 @@
 import 'dart:io';
 
 import 'package:aquafusion/screens/wrapper.dart';
+import 'package:aquafusion/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-
+import 'package:aquafusion/models/user.dart';
+import 'package:provider/provider.dart';
 // ...
 // void main() {
 //   runApp(MyApp());
@@ -24,9 +27,13 @@ Future <void> main()async{
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'AquaFusion',
-      home: Wrapper(),
+    return StreamProvider<UserModel?>.value(
+      initialData: null,
+      value: AuthService().user,
+      child: MaterialApp(
+        title: 'AquaFusion',
+        home: Wrapper(),
+      )
     );
   }
 }
