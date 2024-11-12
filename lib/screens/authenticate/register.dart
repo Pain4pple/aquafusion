@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:aquafusion/services/auth.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _SignInState extends State<SignIn> {
+class _RegisterState extends State<Register> {
 
   final AuthService _authService = AuthService();
+  String firstName = '';
+  String lastName = '';
   String email = '';
   String password = '';
+
   @override
    Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +24,7 @@ class _SignInState extends State<SignIn> {
             Positioned.fill(
             child: Image.asset(
               'assets/images/backgroundlogin.png', 
-              fit: BoxFit.cover,     
+              fit: BoxFit.cover,   
             ),
           ),
           Center(
@@ -36,6 +39,60 @@ class _SignInState extends State<SignIn> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Row(
+                      children: [
+                        Expanded(child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'First Name',
+                        labelStyle: TextStyle(
+                          color: Color(0xff7fbbe9), 
+                          fontWeight: FontWeight.w400,
+                        ),      
+                        hintText: ' ',
+                        hintStyle: TextStyle(
+                          color: Color(0xff7fbbe9), 
+                          fontWeight: FontWeight.w400, 
+                        ),                    
+                        prefixIcon: Icon(Icons.person, color: Colors.blue),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                        ),
+                      ),
+                      onChanged: (val){
+                        setState(() {
+                          firstName = val;
+                        });
+                      },
+                    ),
+                    ),
+                     SizedBox(width: 8), 
+                    Expanded (child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Last Name',
+                        labelStyle: TextStyle(
+                          color: Color(0xff7fbbe9), 
+                          fontWeight: FontWeight.w400,
+                        ),      
+                        hintText: ' ',
+                        hintStyle: TextStyle(
+                          color: Color(0xff7fbbe9), 
+                          fontWeight: FontWeight.w400, 
+                        ),                    
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                        ),
+                      ),
+                      onChanged: (val){
+                        setState(() {
+                          lastName = val;
+                        });
+                      },
+                    ),)
+                    ],
+                    ),
+                    SizedBox(height: 16),
                     TextField(
                       decoration: InputDecoration(
                         labelText: 'Email',
@@ -87,21 +144,15 @@ class _SignInState extends State<SignIn> {
                       },
                     ),
                   SizedBox(height: 24),
-                    _buildGradientButton('Sign In', onPressed: () async {
+                    _buildGradientButton('Register', onPressed: () async {
                       print(email);
-                      print(password);
+                      print(firstName);
                     }),
-                    SizedBox(height: 12),
-                    _buildGradientButton('Sign In Anonymously', onPressed: () async{
-                        dynamic result = await _authService.signInAnon();
-                        if (result==null){
-                          print('error signing in');
-                        }else{
-                          print('signed in');
-                          print(result.uid);
-                        }
-                    }, colors: [const Color.fromARGB(158, 184, 236, 255)!, const Color.fromARGB(171, 134, 159, 206)!],textColor: Color.fromARGB(255, 229, 246, 254)),
-                    SizedBox(height: 16),
+                  SizedBox(height: 16),
+                    _buildGradientButton('Cancel', onPressed: () {
+                      // Handle sign-in logic here
+                    }, colors: [const Color(0xfff4f6ff)!, const Color.fromARGB(171, 134, 159, 206)!],textColor: Color(0xff5d9cec)),
+                  SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -110,18 +161,7 @@ class _SignInState extends State<SignIn> {
                             // Handle registration navigation
                           },
                           child: Text(
-                            'Register',
-                            style: TextStyle(
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            // Handle forgot password logic
-                          },
-                          child: Text(
-                            'Forgot Password?',
+                            'Already registered? Sign in here',
                             style: TextStyle(
                               color: Colors.blue,
                             ),
