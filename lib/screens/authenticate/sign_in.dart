@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:aquafusion/services/auth.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
-
+  final Function toggleView;
+  SignIn({required this.toggleView});
   @override
   State<SignIn> createState() => _SignInState();
 }
@@ -107,10 +107,10 @@ class _SignInState extends State<SignIn> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            // Handle registration navigation
+                             widget.toggleView();
                           },
                           child: Text(
-                            'Register',
+                            'Create an account',
                             style: TextStyle(
                               color: Colors.blue,
                             ),

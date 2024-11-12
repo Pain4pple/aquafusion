@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:aquafusion/services/auth.dart';
 
 class Register extends StatefulWidget {
-  const Register({super.key});
-
+  // const Register({super.key});
+  final Function toggleView;
+  Register ({required this.toggleView});
   @override
   State<Register> createState() => _RegisterState();
 }
@@ -148,27 +149,11 @@ class _RegisterState extends State<Register> {
                       print(email);
                       print(firstName);
                     }),
-                  SizedBox(height: 16),
+                  SizedBox(height: 12),
                     _buildGradientButton('Cancel', onPressed: () {
-                      // Handle sign-in logic here
+                      widget.toggleView();
                     }, colors: [const Color(0xfff4f6ff)!, const Color.fromARGB(171, 134, 159, 206)!],textColor: Color(0xff5d9cec)),
                   SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            // Handle registration navigation
-                          },
-                          child: Text(
-                            'Already registered? Sign in here',
-                            style: TextStyle(
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
