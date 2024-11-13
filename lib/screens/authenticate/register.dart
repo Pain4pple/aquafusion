@@ -18,6 +18,7 @@ class _RegisterState extends State<Register> {
   String lastName = '';
   String email = '';
   String password = '';
+  String error = '';
 
   @override
    Widget build(BuildContext context) {
@@ -187,8 +188,10 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 24),
                     _buildGradientButton('Register', onPressed: () async {
                       if (_formKey.currentState!.validate()){
-                        print('wth');
-                        print(firstName);
+                        dynamic result = await _authService.registerEmailAndPassword(email, password);
+                        if(result==null){
+                          setState(()=> error = 'supply valid credentials');
+                        }
                       }
                     }),
                   SizedBox(height: 12),
