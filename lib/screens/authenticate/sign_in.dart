@@ -36,7 +36,7 @@ class _SignInState extends State<SignIn> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextField(
+                    TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Email',
                         labelStyle: TextStyle(
@@ -61,7 +61,7 @@ class _SignInState extends State<SignIn> {
                       },
                     ),
                     SizedBox(height: 16),
-                    TextField(
+                    TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Password',
                         labelStyle: TextStyle(

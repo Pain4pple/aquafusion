@@ -12,6 +12,8 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
 
   final AuthService _authService = AuthService();
+  final _formKey = GlobalKey<FormState>();
+  
   String firstName = '';
   String lastName = '';
   String email = '';
@@ -37,12 +39,14 @@ class _RegisterState extends State<Register> {
               margin: EdgeInsets.symmetric(horizontal: 40),
               child: Padding(
                 padding: EdgeInsets.all(24),
-                child: Column(
+                child:Form(
+                key: _formKey,
+                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
                       children: [
-                        Expanded(child: TextField(
+                        Expanded(child: TextFormField(
                       decoration: InputDecoration(
                         labelText: 'First Name',
                         labelStyle: TextStyle(
@@ -60,6 +64,15 @@ class _RegisterState extends State<Register> {
                           borderSide: BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty ) {
+                          return 'First Name is required';
+                        }
+                        if(value.length>30){
+                          return 'First Name must be less than 30 characters long';
+                        }
+                        return null;
+                      },
                       onChanged: (val){
                         setState(() {
                           firstName = val;
@@ -68,7 +81,7 @@ class _RegisterState extends State<Register> {
                     ),
                     ),
                      SizedBox(width: 8), 
-                    Expanded (child: TextField(
+                    Expanded (child: TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Last Name',
                         labelStyle: TextStyle(
@@ -85,6 +98,15 @@ class _RegisterState extends State<Register> {
                           borderSide: BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty ) {
+                          return 'Last Name is required';
+                        }
+                        if(value.length>30){
+                          return 'Last Name must be less than 30 characters long';
+                        }
+                        return null;
+                      },
                       onChanged: (val){
                         setState(() {
                           lastName = val;
@@ -94,7 +116,7 @@ class _RegisterState extends State<Register> {
                     ],
                     ),
                     SizedBox(height: 16),
-                    TextField(
+                    TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Email',
                         labelStyle: TextStyle(
@@ -112,6 +134,15 @@ class _RegisterState extends State<Register> {
                           borderSide: BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email is required';
+                        }
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
                       onChanged: (val){
                         setState(() {
                           email = val;
@@ -119,7 +150,7 @@ class _RegisterState extends State<Register> {
                       },
                     ),
                     SizedBox(height: 16),
-                    TextField(
+                    TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Password',
                         labelStyle: TextStyle(
@@ -138,6 +169,15 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                       obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty ) {
+                            return 'Password is required';
+                          }
+                          if(value.length<6){
+                            return 'Password must be 6+ characters long';
+                          }
+                          return null;
+                        },
                       onChanged: (val){
                         setState(() {
                           password = val;
@@ -146,8 +186,10 @@ class _RegisterState extends State<Register> {
                     ),
                   SizedBox(height: 24),
                     _buildGradientButton('Register', onPressed: () async {
-                      print(email);
-                      print(firstName);
+                      if (_formKey.currentState!.validate()){
+                        print('wth');
+                        print(firstName);
+                      }
                     }),
                   SizedBox(height: 12),
                     _buildGradientButton('Cancel', onPressed: () {
@@ -156,6 +198,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 16),
                   ],
                 ),
+              ),
               ),
             ),
 
