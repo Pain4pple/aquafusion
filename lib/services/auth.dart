@@ -1,9 +1,11 @@
 import 'package:aquafusion/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService{
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   UserModel? _userFromFirebase(User? user){
     return user != null ? UserModel(uid: user.uid) : null;
   }
@@ -28,10 +30,24 @@ class AuthService{
 
   //sign in with email n pass
   //register with email n pass
-  Future registerEmailAndPassword(String email, String pass) async{
+  Future registerEmailAndPassword(String email, String pass, String first, String last) async{
     try{
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: pass);
       User? user = result.user;
+      if (user != null) {
+        // Step 2: Store additional user data in Firestore
+        await _firestore.collection('users').doc(user.uid).set({
+          'firstName': first.trim(),
+          'lastName': last.trim(),
+          'phoneNumber': '',
+          'species': '',
+          'lifestage': '',
+          'populationCount': 0,
+          'averageBodyWeight': 0,
+          'email': user.email,
+          'createdAt': DateTime.now(),
+        });
+      }
       return _userFromFirebase(user);
     }catch(e){
       print(e.toString());

@@ -188,7 +188,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 24),
                     _buildGradientButton('Register', onPressed: () async {
                       if (_formKey.currentState!.validate()){
-                        dynamic result = await _authService.registerEmailAndPassword(email, password);
+                        dynamic result = await _authService.registerEmailAndPassword(email, password,firstName,lastName);
                         if(result==null){
                           setState(()=> error = 'supply valid credentials');
                         }
