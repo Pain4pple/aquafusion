@@ -41,16 +41,17 @@ class AuthService{
   }
 
   //register with email n pass
-  Future registerEmailAndPassword(String email, String pass, String first, String last) async{
+  Future registerEmailAndPassword(String email, String pass, String first, String last,String phone) async{
     try{
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: pass);
       User? user = result.user;
+      print(user!.uid);
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
           'firstName': first.trim(),
           'lastName': last.trim(),
           'setup': false,
-          'phoneNumber': '',
+          'phoneNumber': phone.trim(),
           'species': '',
           'lifestage': '',
           'feedingTable': '',
@@ -66,6 +67,23 @@ class AuthService{
       return null;
     }
   }
+  //check setup
+//  Future<bool?> checkUserSetup() async {
+//     try{
+//       User? user = _firebaseAuth.currentUser;
+//       if (user != null) {
+//         DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+
+//         // Check if setup is completed
+//         bool setupCompleted = userDoc['setup'] ?? false;
+//         return setupCompleted;
+//       }
+//     }catch(e){
+//       print(e.toString());
+//       return null;
+//     }
+//   }
+
   //sign out
   Future signOut() async{
     try{

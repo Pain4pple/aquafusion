@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aquafusion/services/auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Register extends StatefulWidget {
   // const Register({super.key});
@@ -17,6 +18,7 @@ class _RegisterState extends State<Register> {
   String firstName = '';
   String lastName = '';
   String email = '';
+  String phoneNumber = '';
   String password = '';
   String error = '';
 
@@ -33,6 +35,7 @@ class _RegisterState extends State<Register> {
           ),
           Center(
             child: Card(
+              color: Color(0xfffeffff),
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -45,6 +48,18 @@ class _RegisterState extends State<Register> {
                  child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    SizedBox(height: 18),
+                    Center(
+                      child: Text(
+                        "Register",
+                        style: GoogleFonts.poppins(
+                          color: Color(0xff202976),
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24),
                     Row(
                       children: [
                         Expanded(child: TextFormField(
@@ -117,6 +132,7 @@ class _RegisterState extends State<Register> {
                     ],
                     ),
                     SizedBox(height: 16),
+                    
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Email',
@@ -151,6 +167,44 @@ class _RegisterState extends State<Register> {
                       },
                     ),
                     SizedBox(height: 16),
+
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Phone Number',
+                        labelStyle: TextStyle(
+                          color: Color(0xff7fbbe9), 
+                          fontWeight: FontWeight.w400,
+                        ),      
+                        hintText: ' ',
+                        hintStyle: TextStyle(
+                          color: Color(0xff7fbbe9), 
+                          fontWeight: FontWeight.w400, 
+                        ),                    
+                        prefixIcon: Icon(Icons.phone, color: Colors.blue),
+                        prefixText: '+63',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Phone number is required';
+                        }
+                        RegExp regExp = RegExp(r'^(9\d{9})$');
+                        if (!regExp.hasMatch(value)) {
+                          return 'Please enter a valid phone number';
+                        }
+                        return null;
+                      },
+                      onChanged: (val){
+                        setState(() {
+                          phoneNumber = val;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 16),
+
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Password',
@@ -188,7 +242,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 24),
                     _buildGradientButton('Register', onPressed: () async {
                       if (_formKey.currentState!.validate()){
-                        dynamic result = await _authService.registerEmailAndPassword(email, password,firstName,lastName);
+                        dynamic result = await _authService.registerEmailAndPassword(email, password,firstName,lastName,phoneNumber);
                         if(result==null){
                           setState(()=> error = 'supply valid credentials');
                         }
@@ -197,7 +251,7 @@ class _RegisterState extends State<Register> {
                   SizedBox(height: 12),
                     _buildGradientButton('Cancel', onPressed: () {
                       widget.toggleView();
-                    }, colors: [const Color(0xfff4f6ff)!, const Color.fromARGB(171, 134, 159, 206)!],textColor: Color(0xff5d9cec)),
+                    }, colors: [const Color(0xfff4f6ff)!, const Color.fromARGB(171, 194, 207, 231)!],textColor: Color(0xff5d9cec)),
                   SizedBox(height: 16),
                   ],
                 ),
@@ -222,6 +276,10 @@ class _RegisterState extends State<Register> {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+        color: Color(0xffb3e8ff), // Border color
+        width: 2, // Border width
+      ),
       ),
       child: Material(
         color: Colors.transparent,

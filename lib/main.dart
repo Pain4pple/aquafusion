@@ -33,6 +33,12 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'AquaFusion',
         home: Wrapper(),
+        theme: ThemeData(
+        // Set the default font family to Poppins using Google Fonts
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme,
+        ),
+      ),
       )
     );
   }

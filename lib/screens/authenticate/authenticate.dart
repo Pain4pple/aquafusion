@@ -21,9 +21,9 @@ class _AuthenticateState extends State<Authenticate> {
       child: SignIn(toggleView:toggleView),
     );
     }else{
-    return Container(
-      child: Register(toggleView:toggleView),
-    );
+      return Container(
+        child: Register(toggleView:toggleView),
+      );
     }
   }
 }

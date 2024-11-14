@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aquafusion/services/auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggleView;
@@ -30,6 +31,7 @@ class _SignInState extends State<SignIn> {
           ),
           Center(
             child: Card(
+              color: Color(0xfffeffff),
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -42,6 +44,18 @@ class _SignInState extends State<SignIn> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    SizedBox(height: 18),
+                    Center(
+                      child: Text(
+                        "AquaFusion",
+                        style: GoogleFonts.poppins(
+                          color: Color(0xff202976),
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24),
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Email',

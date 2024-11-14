@@ -1,7 +1,6 @@
 import 'package:aquafusion/screens/home/components/logout.dart';
 import 'package:aquafusion/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 // Import the pages
@@ -55,7 +54,7 @@ class _HomeState extends State<Home> {
       body: Row(
         children: <Widget>[
           Container(
-            width: 100, 
+            width: 105, 
              decoration: const BoxDecoration(
                gradient: LinearGradient(
                colors: [Color(0xff529cea), Color(0xffa8e0fd)],
@@ -147,7 +146,7 @@ class _HomeState extends State<Home> {
       child: Container(
         color: _selectedPageIndex == index ? Color(0xff55ccff) : Colors.red.withOpacity(0),
         padding: EdgeInsets.all(15),
-        width: 100,
+        width: 150,
         child: Column(
           children: <Widget>[
             Icon(icon, color: Colors.white),
