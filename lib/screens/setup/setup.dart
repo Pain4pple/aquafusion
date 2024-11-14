@@ -22,7 +22,6 @@ class _SetupState extends State<Setup> {
   final List<String> optionsLifestage = ['Fingerling', 'Juvenile','Grower','Finisher'];  
   String? species;
   String? lifestage;
-  String phoneNumber = '';
   String error = '';
   String survivalRate = '';
   String averageBodyWeight = '';
