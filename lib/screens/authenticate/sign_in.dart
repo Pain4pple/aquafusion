@@ -11,8 +11,12 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
 
   final AuthService _authService = AuthService();
+  final _formKey = GlobalKey<FormState>();
+
   String email = '';
   String password = '';
+  String error = '';
+
   @override
    Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +37,8 @@ class _SignInState extends State<SignIn> {
               margin: EdgeInsets.symmetric(horizontal: 40),
               child: Padding(
                 padding: EdgeInsets.all(24),
+                child: Form(
+                key:_formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -54,6 +60,15 @@ class _SignInState extends State<SignIn> {
                           borderSide: BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email is required';
+                        }
+                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
                       onChanged: (val){
                         setState(() {
                           email = val;
@@ -80,6 +95,15 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                       obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty ) {
+                            return 'Password is required';
+                          }
+                          if(value.length<6){
+                            return 'Password must be 6+ characters long';
+                          }
+                          return null;
+                        },
                       onChanged: (val){
                         setState(() {
                           password = val;
@@ -88,8 +112,12 @@ class _SignInState extends State<SignIn> {
                     ),
                   SizedBox(height: 24),
                     _buildGradientButton('Sign In', onPressed: () async {
-                      print(email);
-                      print(password);
+                      if (_formKey.currentState!.validate()){
+                        dynamic result = await _authService.signInEmailAndPassword(email, password);
+                        if(result==null){
+                          setState(()=> error = 'Invalid credentials');
+                        }
+                      }
                     }),
                     SizedBox(height: 12),
                     _buildGradientButton('Sign In Anonymously', onPressed: () async{
@@ -130,6 +158,7 @@ class _SignInState extends State<SignIn> {
                       ],
                     ),
                   ],
+                ),
                 ),
               ),
             ),

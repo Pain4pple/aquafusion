@@ -29,13 +29,23 @@ class AuthService{
   }
 
   //sign in with email n pass
+  Future signInEmailAndPassword(String email, String pass) async{
+    try{
+      UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: pass);
+      User? user = result.user;
+      return _userFromFirebase(user);
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
+
   //register with email n pass
   Future registerEmailAndPassword(String email, String pass, String first, String last) async{
     try{
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: pass);
       User? user = result.user;
       if (user != null) {
-        // Step 2: Store additional user data in Firestore
         await _firestore.collection('users').doc(user.uid).set({
           'firstName': first.trim(),
           'lastName': last.trim(),
