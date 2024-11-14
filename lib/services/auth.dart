@@ -49,9 +49,11 @@ class AuthService{
         await _firestore.collection('users').doc(user.uid).set({
           'firstName': first.trim(),
           'lastName': last.trim(),
+          'setup': false,
           'phoneNumber': '',
           'species': '',
           'lifestage': '',
+          'feedingTable': '',
           'populationCount': 0,
           'averageBodyWeight': 0,
           'email': user.email,
