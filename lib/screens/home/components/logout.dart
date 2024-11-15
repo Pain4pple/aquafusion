@@ -67,7 +67,7 @@ class _LogoutButtonState extends State<LogoutButton> {
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text("Logout"),
-        content: Text("Are you sure you want to log out?\nLogging out means you have to calibrate and connect the device to your account again"),
+        content: Text("Are you sure you want to log out?\nChanging your account means you have to pair the AquaFusion device to your account again."),
         actions: <Widget>[
           TextButton(
             child: Text("No"),
