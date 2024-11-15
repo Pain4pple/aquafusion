@@ -1,5 +1,7 @@
 import 'package:aquafusion/screens/home/components/logout.dart';
 import 'package:aquafusion/services/auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,7 +34,12 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _selectedPageIndex = 0;
   final AuthService _firebaseAuth = AuthService();
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String? userName;
+  String? userPhoneNumber;
+  String? userSpecies;
+  
   // Pages for navigation
   final List<Widget> _pages = [
     DashboardScreen(),
@@ -42,12 +49,36 @@ class _HomeState extends State<Home> {
     SettingsScreen(),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _getUserDetails();
+  }
+
   void _selectPage(int index) {
     setState(() {
       _selectedPageIndex = index;
     });
   }
-
+  // Function to retrieve user details
+  Future<void> _getUserDetails() async {
+    try {
+      User? user = _auth.currentUser;
+      if (user != null) {
+        DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          setState(() {
+            userName = userDoc['firstName'] ?? 'User';
+            userPhoneNumber = userDoc['phoneNumber'] ?? 'No phone number';
+            userSpecies = userDoc['species'] ?? 'No species';
+          });
+        }
+      }
+    } catch (e) {
+      print("Error fetching user details: $e");
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,7 +149,7 @@ class _HomeState extends State<Home> {
                           color: Color(0xff529cea),
                           thickness: 0.2,
                         ),
-                        Text("Don Hilario's Fish Farm",
+                        Text("$userName's Fish Farm",
                             style: TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 20,

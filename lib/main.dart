@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aquafusion/screens/wrapper.dart';
 import 'package:aquafusion/services/auth.dart';
+import 'package:aquafusion/services/mqtt_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,8 +26,11 @@ Future <void> main()async{
 }
 
 class MyApp extends StatelessWidget {
+  final MQTTClientWrapper mqttClient = MQTTClientWrapper();
+
   @override
   Widget build(BuildContext context) {
+    mqttClient.prepareMqttClient();
     return StreamProvider<UserModel?>.value(
       initialData: null,
       value: AuthService().user,

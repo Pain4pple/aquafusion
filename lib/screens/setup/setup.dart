@@ -110,7 +110,7 @@ class _SetupState extends State<Setup> {
                           child: Text(option),
                         );
                       }).toList(),
-                      icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
+                      icon: Icon(Icons.expand_more, color: Colors.blue),
                       style: GoogleFonts.poppins(color: Colors.black, fontSize: 16),
                     ),
                     SizedBox(height: 16),
@@ -143,7 +143,7 @@ class _SetupState extends State<Setup> {
                           child: Text(option),
                         );
                       }).toList(),
-                      icon: Icon(Icons.arrow_drop_down, color: Colors.blue),
+                      icon: Icon(Icons.expand_more, color: Colors.blue),
                       style: GoogleFonts.poppins(color: Colors.black, fontSize: 16),
                     ),
                     SizedBox(height: 16),

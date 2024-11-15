@@ -26,14 +26,19 @@ class _LogoutButtonState extends State<LogoutButton> {
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
-        onTap: () async {
-          await widget._firebaseAuth.signOut();
+        onTap: () {
+          showLogoutConfirmationDialog(context, () async {
+            // Your logout logic here
+            // Example: FirebaseAuth.instance.signOut();
+            await widget._firebaseAuth.signOut();
+            print("User logged out");
+          });
         },
         child: AnimatedContainer(
           duration: Duration(milliseconds: 200),
           color: _isHovered ? Color(0xff55ccff) : Color.fromARGB(7, 85, 204, 255),
           padding: EdgeInsets.all(15),
-          width: 100,
+          width: 105,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -55,4 +60,31 @@ class _LogoutButtonState extends State<LogoutButton> {
       ),
     );
   }
+
+  void showLogoutConfirmationDialog(BuildContext context, VoidCallback onConfirmLogout) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text("Logout"),
+        content: Text("Are you sure you want to log out?\nLogging out means you have to calibrate and connect the device to your account again"),
+        actions: <Widget>[
+          TextButton(
+            child: Text("No"),
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+            },
+          ),
+          TextButton(
+            child: Text("Yes"),
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog
+              onConfirmLogout(); // Call the logout function
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 }
