@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggleView;
-  SignIn({required this.toggleView});
+  const SignIn({super.key, required this.toggleView});
   @override
   State<SignIn> createState() => _SignInState();
 }
@@ -31,47 +31,47 @@ class _SignInState extends State<SignIn> {
           ),
           Center(
             child: Card(
-              color: Color(0xfffeffff),
+              color: const Color(0xfffeffff),
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              margin: EdgeInsets.symmetric(horizontal: 40),
+              margin: const EdgeInsets.symmetric(horizontal: 40),
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Form(
                 key:_formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(height: 18),
+                    const SizedBox(height: 18),
                     Center(
                       child: Text(
                         "AquaFusion",
                         style: GoogleFonts.poppins(
-                          color: Color(0xff202976),
+                          color: const Color(0xff202976),
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400,
                         ),      
                         hintText: 'Enter your email',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),                    
-                        prefixIcon: Icon(Icons.email, color: Colors.blue),
+                        prefixIcon: const Icon(Icons.email, color: Colors.blue),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       validator: (value) {
@@ -89,23 +89,23 @@ class _SignInState extends State<SignIn> {
                         });
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400,
                         ),                    
                         hintText: 'Enter your password',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),            
-                        prefixIcon: Icon(Icons.lock, color: Colors.blue),
+                        prefixIcon: const Icon(Icons.lock, color: Colors.blue),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       obscureText: true,
@@ -124,7 +124,7 @@ class _SignInState extends State<SignIn> {
                         });
                       },
                     ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                     _buildGradientButton('Sign In', onPressed: () async {
                       if (_formKey.currentState!.validate()){
                         dynamic result = await _authService.signInEmailAndPassword(email, password);
@@ -133,7 +133,7 @@ class _SignInState extends State<SignIn> {
                         }
                       }
                     }),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
                     _buildGradientButton('Sign In Anonymously', onPressed: () async{
                         dynamic result = await _authService.signInAnon();
                         if (result==null){
@@ -142,8 +142,8 @@ class _SignInState extends State<SignIn> {
                           print('signed in');
                           print(result.uid);
                         }
-                    }, colors: [const Color.fromARGB(158, 184, 236, 255)!, const Color.fromARGB(171, 134, 159, 206)!],textColor: Color.fromARGB(255, 229, 246, 254)),
-                    SizedBox(height: 16),
+                    }, colors: [const Color.fromARGB(158, 184, 236, 255), const Color.fromARGB(171, 134, 159, 206)],textColor: const Color.fromARGB(255, 229, 246, 254)),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -151,7 +151,7 @@ class _SignInState extends State<SignIn> {
                           onTap: () {
                              widget.toggleView();
                           },
-                          child: Text(
+                          child: const Text(
                             'Create an account',
                             style: TextStyle(
                               color: Colors.blue,
@@ -162,7 +162,7 @@ class _SignInState extends State<SignIn> {
                           onTap: () {
                             // Handle forgot password logic
                           },
-                          child: Text(
+                          child: const Text(
                             'Forgot Password?',
                             style: TextStyle(
                               color: Colors.blue,
@@ -189,7 +189,7 @@ class _SignInState extends State<SignIn> {
       height: 50,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: colors ?? [Color(0xffb3e8ff), Color(0xff529cea)],
+          colors: colors ?? [const Color(0xffb3e8ff), const Color(0xff529cea)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

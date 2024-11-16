@@ -7,7 +7,7 @@ class LogoutButton extends StatefulWidget {
   final String title;
   final AuthService _firebaseAuth;
 
-  LogoutButton({
+  const LogoutButton({super.key, 
     required this.icon,
     required this.title,
     required AuthService firebaseAuth,
@@ -35,9 +35,9 @@ class _LogoutButtonState extends State<LogoutButton> {
           });
         },
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 200),
-          color: _isHovered ? Color(0xff55ccff) : Color.fromARGB(7, 85, 204, 255),
-          padding: EdgeInsets.all(15),
+          duration: const Duration(milliseconds: 200),
+          color: _isHovered ? const Color(0xff55ccff) : const Color.fromARGB(7, 85, 204, 255),
+          padding: const EdgeInsets.all(15),
           width: 105,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -46,10 +46,10 @@ class _LogoutButtonState extends State<LogoutButton> {
                 widget.icon,
                 color: Colors.white,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 widget.title,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 13,
                 ),
@@ -66,17 +66,17 @@ class _LogoutButtonState extends State<LogoutButton> {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Logout"),
-        content: Text("Are you sure you want to log out?\nChanging your account means you have to pair the AquaFusion device to your account again."),
+        title: const Text("Logout"),
+        content: const Text("Are you sure you want to log out?\nChanging your account means you have to pair the AquaFusion device to your account again."),
         actions: <Widget>[
           TextButton(
-            child: Text("No"),
+            child: const Text("No"),
             onPressed: () {
               Navigator.of(context).pop(); // Close the dialog
             },
           ),
           TextButton(
-            child: Text("Yes"),
+            child: const Text("Yes"),
             onPressed: () {
               Navigator.of(context).pop(); // Close the dialog
               onConfirmLogout(); // Call the logout function

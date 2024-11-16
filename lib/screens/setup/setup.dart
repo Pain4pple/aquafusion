@@ -1,4 +1,4 @@
-import 'dart:ffi';
+//import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,14 +57,14 @@ class _SetupState extends State<Setup> {
           ),
           Center(
             child: Card(
-              color: Color(0xfffeffff),
+              color: const Color(0xfffeffff),
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              margin: EdgeInsets.symmetric(horizontal: 40),
+              margin: const EdgeInsets.symmetric(horizontal: 40),
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: Form(
                 key:_formKey,
                 child: Column(
@@ -74,26 +74,26 @@ class _SetupState extends State<Setup> {
                       child: Text(
                         "Setup",
                         style: GoogleFonts.poppins(
-                          color: Color(0xff202976),
+                          color: const Color(0xff202976),
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     DropdownButtonFormField<String>(
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                          borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
                         ),
                         hintText: 'Select a species',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),     
@@ -110,23 +110,23 @@ class _SetupState extends State<Setup> {
                           child: Text(option),
                         );
                       }).toList(),
-                      icon: Icon(Icons.expand_more, color: Colors.blue),
+                      icon: const Icon(Icons.expand_more, color: Colors.blue),
                       style: GoogleFonts.poppins(color: Colors.black, fontSize: 16),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     DropdownButtonFormField<String>(
                        decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                          borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
                         ),
                         hintText: 'Select a lifestage',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),     
@@ -143,22 +143,22 @@ class _SetupState extends State<Setup> {
                           child: Text(option),
                         );
                       }).toList(),
-                      icon: Icon(Icons.expand_more, color: Colors.blue),
+                      icon: const Icon(Icons.expand_more, color: Colors.blue),
                       style: GoogleFonts.poppins(color: Colors.black, fontSize: 16),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     TextFormField(
                       decoration: InputDecoration(    
                         suffixText: '%',
                         hintText: 'Survival Rate (%)',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),                    
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       validator: (value) {
@@ -176,17 +176,17 @@ class _SetupState extends State<Setup> {
                         });
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(    
                         hintText: 'Population count / Stocking density (pcs)',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),                    
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       validator: (value) {
@@ -204,17 +204,17 @@ class _SetupState extends State<Setup> {
                         });
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     TextFormField(
                       decoration: InputDecoration(                    
                         hintText: 'Average Body Weight (g)',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),            
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       validator: (value) {
@@ -232,19 +232,19 @@ class _SetupState extends State<Setup> {
                         });
                       },
                     ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                     _buildGradientButton('Submit', onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
                       // If the form is valid, show a success message or proceed
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Storing Data')));
+                          const SnackBar(content: Text('Storing Data')));
                           _completeSetup();
                       }else{
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Please make sure all details are correct')));
+                          const SnackBar(content: Text('Please make sure all details are correct')));
                       }
                     }),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                   ],
                 ),
                 ),
@@ -263,7 +263,7 @@ class _SetupState extends State<Setup> {
       height: 50,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: colors ?? [Color(0xffb3e8ff), Color(0xff529cea)],
+          colors: colors ?? [const Color(0xffb3e8ff), const Color(0xff529cea)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

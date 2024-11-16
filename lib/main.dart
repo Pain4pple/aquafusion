@@ -28,6 +28,8 @@ Future <void> main()async{
 class MyApp extends StatelessWidget {
   final MQTTClientWrapper mqttClient = MQTTClientWrapper();
 
+  MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     mqttClient.prepareMqttClient();

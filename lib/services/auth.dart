@@ -46,22 +46,20 @@ class AuthService{
       UserCredential result = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: pass);
       User? user = result.user;
       print(user!.uid);
-      if (user != null) {
-        await _firestore.collection('users').doc(user.uid).set({
-          'firstName': first.trim(),
-          'lastName': last.trim(),
-          'setup': false,
-          'phoneNumber': phone.trim(),
-          'species': '',
-          'lifestage': '',
-          'feedingTable': '',
-          'populationCount': 0,
-          'averageBodyWeight': 0,
-          'email': user.email,
-          'createdAt': DateTime.now(),
-        });
-      }
-      return _userFromFirebase(user);
+      await _firestore.collection('users').doc(user.uid).set({
+        'firstName': first.trim(),
+        'lastName': last.trim(),
+        'setup': false,
+        'phoneNumber': phone.trim(),
+        'species': '',
+        'lifestage': '',
+        'feedingTable': '',
+        'populationCount': 0,
+        'averageBodyWeight': 0,
+        'email': user.email,
+        'createdAt': DateTime.now(),
+      });
+          return _userFromFirebase(user);
     }catch(e){
       print(e.toString());
       return null;

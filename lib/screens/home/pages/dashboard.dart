@@ -11,21 +11,21 @@ class DashboardScreen extends StatelessWidget {
     return DefaultTabController(
       length: 3, // Number of tabs
       child: Scaffold(
-      backgroundColor: Color(0xfff0f4ff),
+      backgroundColor: const Color(0xfff0f4ff),
         appBar: AppBar(
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(0.0), 
+          preferredSize: const Size.fromHeight(0.0), 
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color.fromARGB(255, 235, 239, 253), // Background color of the TabBar
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(15),
                 bottomRight: Radius.circular(15),
               ),
             ),
-            child: TabBar(
+            child: const TabBar(
             labelColor: Colors.blue,
-            unselectedLabelColor: const Color.fromARGB(255, 168, 176, 202),
+            unselectedLabelColor: Color.fromARGB(255, 168, 176, 202),
             indicatorColor: Colors.blue,
             indicatorWeight: 5.0, 
             tabs: [
@@ -36,12 +36,12 @@ class DashboardScreen extends StatelessWidget {
           ),
           )
         ),
-        backgroundColor: Color(0xfff0f4ff),
+        backgroundColor: const Color(0xfff0f4ff),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [
             Center(child: All()),
-            Center(child: WaterQuality()),
+            Center(child: Water()),
             Center(child: Feed()),
           ],
         ),

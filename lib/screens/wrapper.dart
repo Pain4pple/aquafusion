@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatefulWidget {
+  const Wrapper({super.key});
+
   @override
   _WrapperState createState() => _WrapperState();
 }
@@ -43,18 +45,18 @@ class _WrapperState extends State<Wrapper> {
 
     // Check if user is authenticated
     if (user == null) {
-      return Authenticate();
+      return const Authenticate();
     } else {
       _checkUserSetup();
       // If setupCompleted is null, show a loading screen
       if (setupCompleted == null) {
-        return Scaffold(
+        return const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         );
       }
 
       // Show Home or Setup screen based on setupCompleted status
-      return setupCompleted! ? Home() : Setup();
+      return setupCompleted! ? Home() : const Setup();
     }
   }
 }

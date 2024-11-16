@@ -27,6 +27,8 @@ import 'dart:io';
 
 
 class Home extends StatefulWidget {
+  const Home({super.key});
+
   @override
   _HomeState createState() => _HomeState();
 }
@@ -34,15 +36,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _selectedPageIndex = 0;
   final AuthService _firebaseAuth = AuthService();
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String? userName;
   String? userPhoneNumber;
   String? userSpecies;
   
   // Pages for navigation
   final List<Widget> _pages = [
-    DashboardScreen(),
+    const DashboardScreen(),
     FeedingScheduleScreen(),
     Exportreport(),
     DevMode(),
@@ -119,14 +121,14 @@ class _HomeState extends State<Home> {
           Expanded(
             child: Column(
               children: [
-                Container(color: Color(0xfffeffff), 
+                Container(color: const Color(0xfffeffff), 
                 child: SizedBox(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text("AquaFusion",
@@ -145,12 +147,12 @@ class _HomeState extends State<Home> {
                             )
                           ],
                         ),
-                        Divider(
+                        const Divider(
                           color: Color(0xff529cea),
                           thickness: 0.2,
                         ),
                         Text("$userName's Fish Farm",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 20,
                               color: Color(0xff202976),
@@ -175,16 +177,16 @@ class _HomeState extends State<Home> {
     return GestureDetector(
       onTap: () => _selectPage(index),
       child: Container(
-        color: _selectedPageIndex == index ? Color(0xff55ccff) : Colors.red.withOpacity(0),
-        padding: EdgeInsets.all(15),
+        color: _selectedPageIndex == index ? const Color(0xff55ccff) : Colors.red.withOpacity(0),
+        padding: const EdgeInsets.all(15),
         width: 150,
         child: Column(
           children: <Widget>[
             Icon(icon, color: Colors.white),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 13,
               ),
@@ -203,15 +205,15 @@ class _HomeState extends State<Home> {
       
       child: Container(
         color: Colors.red.withOpacity(0),
-        padding: EdgeInsets.all(15),
+        padding: const EdgeInsets.all(15),
         width: 100,
         child: Column(
           children: <Widget>[
             Icon(icon, color: Colors.white),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 13,
               ),

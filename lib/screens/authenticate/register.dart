@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class Register extends StatefulWidget {
   // const Register({super.key});
   final Function toggleView;
-  Register ({required this.toggleView});
+  const Register ({super.key, required this.toggleView});
   @override
   State<Register> createState() => _RegisterState();
 }
@@ -35,49 +35,49 @@ class _RegisterState extends State<Register> {
           ),
           Center(
             child: Card(
-              color: Color(0xfffeffff),
+              color: const Color(0xfffeffff),
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              margin: EdgeInsets.symmetric(horizontal: 40),
+              margin: const EdgeInsets.symmetric(horizontal: 40),
               child: Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child:Form(
                 key: _formKey,
                  child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(height: 18),
+                    const SizedBox(height: 18),
                     Center(
                       child: Text(
                         "Register",
                         style: GoogleFonts.poppins(
-                          color: Color(0xff202976),
+                          color: const Color(0xff202976),
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                     Row(
                       children: [
                         Expanded(child: TextFormField(
                       decoration: InputDecoration(
                         labelText: 'First Name',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400,
                         ),      
                         hintText: ' ',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),                    
-                        prefixIcon: Icon(Icons.person, color: Colors.blue),
+                        prefixIcon: const Icon(Icons.person, color: Colors.blue),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       validator: (value) {
@@ -96,22 +96,22 @@ class _RegisterState extends State<Register> {
                       },
                     ),
                     ),
-                     SizedBox(width: 8), 
+                     const SizedBox(width: 8), 
                     Expanded (child: TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Last Name',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400,
                         ),      
                         hintText: ' ',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),                    
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       validator: (value) {
@@ -131,24 +131,24 @@ class _RegisterState extends State<Register> {
                     ),)
                     ],
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Email',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400,
                         ),      
                         hintText: 'Enter your email',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),                    
-                        prefixIcon: Icon(Icons.email, color: Colors.blue),
+                        prefixIcon: const Icon(Icons.email, color: Colors.blue),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       validator: (value) {
@@ -166,25 +166,25 @@ class _RegisterState extends State<Register> {
                         });
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Phone Number',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400,
                         ),      
                         hintText: ' ',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),                    
-                        prefixIcon: Icon(Icons.phone, color: Colors.blue),
+                        prefixIcon: const Icon(Icons.phone, color: Colors.blue),
                         prefixText: '+63',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       validator: (value) {
@@ -203,24 +203,24 @@ class _RegisterState extends State<Register> {
                         });
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     TextFormField(
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        labelStyle: TextStyle(
+                        labelStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400,
                         ),                    
                         hintText: 'Enter your password',
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           color: Color(0xff7fbbe9), 
                           fontWeight: FontWeight.w400, 
                         ),            
-                        prefixIcon: Icon(Icons.lock, color: Colors.blue),
+                        prefixIcon: const Icon(Icons.lock, color: Colors.blue),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(color: Colors.blue, width: 1.5),
+                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
                         ),
                       ),
                       obscureText: true,
@@ -239,7 +239,7 @@ class _RegisterState extends State<Register> {
                         });
                       },
                     ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                     _buildGradientButton('Register', onPressed: () async {
                       if (_formKey.currentState!.validate()){
                         dynamic result = await _authService.registerEmailAndPassword(email, password,firstName,lastName,phoneNumber);
@@ -248,11 +248,11 @@ class _RegisterState extends State<Register> {
                         }
                       }
                     }),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                     _buildGradientButton('Cancel', onPressed: () {
                       widget.toggleView();
-                    }, colors: [const Color(0xfff4f6ff)!, const Color.fromARGB(171, 194, 207, 231)!],textColor: Color(0xff5d9cec)),
-                  SizedBox(height: 16),
+                    }, colors: [const Color(0xfff4f6ff), const Color.fromARGB(171, 194, 207, 231)],textColor: const Color(0xff5d9cec)),
+                  const SizedBox(height: 16),
                   ],
                 ),
               ),
@@ -271,13 +271,13 @@ class _RegisterState extends State<Register> {
       height: 50,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: colors ?? [Color(0xffb3e8ff), Color(0xff529cea)],
+          colors: colors ?? [const Color(0xffb3e8ff), const Color(0xff529cea)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-        color: Color(0xffb3e8ff), // Border color
+        color: const Color(0xffb3e8ff), // Border color
         width: 2, // Border width
       ),
       ),

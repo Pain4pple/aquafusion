@@ -3,6 +3,8 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 class DevMode extends StatefulWidget {
+  const DevMode({super.key});
+
   @override
   _DevModeState createState() => _DevModeState();
 }
@@ -82,12 +84,12 @@ class _DevModeState extends State<DevMode> {
           children: [
             ElevatedButton(
               onPressed: () => publishMessage('ON'),
-              child: Text('Turn LED ON'),
+              child: const Text('Turn LED ON'),
             ),
             ElevatedButton(
               onPressed: () => publishMessage('OFF'),
               onLongPress: () => publishMessage('HEHEHHE'),
-              child: Text('Turn LED OFF'),
+              child: const Text('Turn LED OFF'),
             ),
           ],
         ),
