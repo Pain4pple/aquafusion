@@ -1,6 +1,6 @@
 import 'package:aquafusion/screens/home/pages/tabs/all.dart';
-import 'package:aquafusion/screens/home/pages/tabs/feed.dart';
 import 'package:aquafusion/screens/home/pages/tabs/water.dart';
+import 'package:aquafusion/screens/home/pages/tabs/feed.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -38,10 +38,10 @@ class DashboardScreen extends StatelessWidget {
         ),
         backgroundColor: const Color(0xfff0f4ff),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            Center(child: All()),
-            Center(child: Water()),
+            const Center(child: All()),
+            const Center(child: Water()),
             Center(child: Feed()),
           ],
         ),

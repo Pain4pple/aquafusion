@@ -1,3 +1,4 @@
+import 'package:aquafusion/prompts/insertnewabw.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -97,31 +98,38 @@ class _AllState extends State<All> {
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          feedLevel -= feedLevel * 0.1;
-                        });
-                      },
-                      child: const Text("-10%"),
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                          // Deduct 10% of the feed level but ensure it doesn't go below 0
+                            feedLevel = (feedLevel * 0.9).clamp(0, double.infinity);
+                            feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+                          });
+                        },
+                        child: const Text("-10%"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => InsertNewAbwPrompt(),
+                          );
+                        },
+                      child: Text("Insert New ABW and Stocking Density"),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        print("Insert new ABW and Stock Density");
-                      },
-                      child: const Text("Insert new ABW and Stock Density"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          feedLevel += feedLevel * 0.1;
-                        });
-                      },
-                      child: const Text("+10%"),
-                    ),
-                  ],
-                ),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                          // Add 10% to the feed level
+                            feedLevel = feedLevel * 1.1;
+                            feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+                          });
+                        },
+                        child: const Text("+10%"),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
