@@ -21,7 +21,6 @@ class _AllState extends State<All> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 16.0),
               Expanded(
                 child: Column(
                   children: [
@@ -240,12 +239,10 @@ class _AllState extends State<All> {
                   ]
                   )
               ),
-                ],
-                )
-              ),
-            ],
-          );
-
+              ],
+          )
+        ),
+      ],
+    );
   }
-  
 }
