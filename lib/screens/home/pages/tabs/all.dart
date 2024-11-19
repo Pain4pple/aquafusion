@@ -1,125 +1,212 @@
+import 'package:aquafusion/prompts/insertnewabw.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
 
-void main() {
-  runApp(All());
-}
+class All extends StatefulWidget {
+  const All({Key? key}) : super(key: key);
 
-class All extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: FeederControlPage(),
-    );
-  }
+  State<All> createState() => _AllState();
 }
 
-class FeederControlPage extends StatefulWidget {
-  @override
-  _FeederControlPageState createState() => _FeederControlPageState();
-}
+class _AllState extends State<All> {
+  // Simulated data placeholders (replace with database calls)
+  double feedLevel = 25.0; // Example: 25 kg
+  String feedStatus = "Low Feed Levels";
+  String waterStatus = "Operational";
+  double ph = 8.5;
+  double turbidity = 30.0;
+  double salinity = 0.1;
+  double dissolvedOxygen = 5.0;
+  double temperature = 24.0;
 
-class _FeederControlPageState extends State<FeederControlPage> {
-  double currentDfr = 0.0; // Displayed DFR
-  String statusMessage = "";
-
-  // Fetch the current DFR from the Raspberry Pi
-  Future<void> fetchCurrentDfr() async {
-    try {
-      final response = await http.get(Uri.parse('http://<raspberry-pi-ip>:5000/get-dfr'));
-
-      if (response.statusCode == 200) {
-        setState(() {
-          currentDfr = double.parse(response.body); // Parse the DFR value
-        });
-      } else {
-        setState(() {
-          statusMessage = "Failed to fetch DFR. Error code: ${response.statusCode}";
-        });
-      }
-    } catch (e) {
-      setState(() {
-        statusMessage = "Error fetching DFR: $e";
-      });
-    }
-  }
-
-  // Send adjustment commands to the Raspberry Pi
-  Future<void> adjustDfr(String adjustmentType) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://<raspberry-pi-ip>:5000/adjust-dfr'),
-        headers: {'Content-Type': 'application/json'},
-        body: '{"adjustment": "$adjustmentType"}',
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          statusMessage = "DFR updated successfully!";
-          currentDfr = double.parse(response.body); // Update displayed DFR
-        });
-      } else {
-        setState(() {
-          statusMessage = "Failed to update DFR. Error code: ${response.statusCode}";
-        });
-      }
-    } catch (e) {
-      setState(() {
-        statusMessage = "Error updating DFR: $e";
-      });
-    }
+  // Fetch data from the database
+  Future<void> fetchData() async {
+    // Simulate API call delay and replace with real database calls
+    await Future.delayed(const Duration(seconds: 1));
+    setState(() {
+      // Update with data fetched from the database
+      feedLevel = 20.0; // Example: New feed level
+      feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+      ph = 7.8; // Example: New pH value
+      turbidity = 25.0;
+      salinity = 0.15;
+      dissolvedOxygen = 5.5;
+      temperature = 26.0;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    fetchCurrentDfr(); // Fetch the DFR when the app loads
+    fetchData(); // Fetch initial data
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Feeder Control'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Current DFR: ${currentDfr.toStringAsFixed(2)} grams',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // Header section
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                  onPressed: () => adjustDfr('decrease'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                  ),
-                  child: Text('-10%'),
-                ),
-                ElevatedButton(
-                  onPressed: () => adjustDfr('increase'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                  ),
-                  child: Text('+10%'),
-                ),
+                Text("AquaFusion", style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold)),
               ],
             ),
-            SizedBox(height: 20),
-            Text(
-              statusMessage,
-              style: TextStyle(color: Colors.blue, fontSize: 16),
+          ),
+
+          // Feed and Water Quality Monitoring Section
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // Feed Status Card
+              _buildStatusCard(
+                title: "Feeder",
+                status: feedStatus,
+                icon: Icons.error,
+                iconColor: Colors.red,
+                gradientColors: [Color(0xFFFEC583), Color(0xFFFAD9D9)],
+              ),
+              // Water Quality Status Card
+              _buildStatusCard(
+                title: "Water Quality Monitoring",
+                status: waterStatus,
+                icon: Icons.water_drop,
+                iconColor: Colors.blue,
+                gradientColors: [Color(0xFF95C9FF), Color(0xFFCAEFFF)],
+              ),
+            ],
+          ),
+
+          // Feed Level Indicator
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Text(
+                  "Feed Levels",
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Icon(Icons.feed, size: 50, color: Colors.red),
+                Text(
+                  "${feedLevel.toStringAsFixed(1)} kg remaining",
+                  style: GoogleFonts.poppins(fontSize: 16),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                          // Deduct 10% of the feed level but ensure it doesn't go below 0
+                            feedLevel = (feedLevel * 0.9).clamp(0, double.infinity);
+                            feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+                          });
+                        },
+                        child: const Text("-10%"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => InsertNewAbwPrompt(),
+                          );
+                        },
+                      child: Text("Insert New ABW and Stocking Density"),
+                    ),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                          // Add 10% to the feed level
+                            feedLevel = feedLevel * 1.1;
+                            feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+                          });
+                        },
+                        child: const Text("+10%"),
+                      ),
+                    ],
+                  ),
+              ],
             ),
-          ],
+          ),
+
+          // Water Quality Readings
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Water Quality Readings",
+                  style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                _buildReadingCard("pH", ph, "Average: Last 2 mins"),
+                _buildReadingCard("Turbidity (NTU)", turbidity, "Average: Last 2 mins"),
+                _buildReadingCard("Salinity (ppt)", salinity, "Average: Last 2 mins"),
+                _buildReadingCard("Dissolved Oxygen (mg/L)", dissolvedOxygen, "Average: Last 2 mins"),
+                _buildReadingCard("Temperature (°C)", temperature, "Average: Last 2 mins"),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Method to build status cards
+  Widget _buildStatusCard({
+    required String title,
+    required String status,
+    required IconData icon,
+    required Color iconColor,
+    required List<Color> gradientColors,
+  }) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.4,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: gradientColors),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(icon, color: iconColor, size: 30),
+              const SizedBox(width: 8),
+              Text(
+                status,
+                style: GoogleFonts.poppins(fontSize: 14),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Method to build reading cards
+  Widget _buildReadingCard(String title, double value, String description) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: Colors.blue.shade100,
+          child: Text(value.toStringAsFixed(1), style: GoogleFonts.poppins(fontSize: 16)),
         ),
+        title: Text(title, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
+        subtitle: Text(description, style: GoogleFonts.poppins(fontSize: 14)),
       ),
     );
   }

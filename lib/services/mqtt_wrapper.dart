@@ -85,9 +85,10 @@ class MQTTClientWrapper {
 void _setupMqttClient() {
   if (kIsWeb) {
     // Initialize MqttBrowserClient for web
-    client = MqttBrowserClient(
+    client = MqttBrowserClient.withPort(
       'wss://2577b26ceb134221a22d8d1d904f419e.s1.eu.hivemq.cloud/mqtt',
       'flutter_app',
+      8884,
     );
     print('Setting up MqttBrowserClient for web');
   } else {
