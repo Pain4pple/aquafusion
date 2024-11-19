@@ -100,13 +100,6 @@ class _WaterState extends State<Water> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Section
-              Text(
-                "AquaFusion",
-                style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-
               // Overall Trend Section (Combined Line Graph)
               Text(
                 "Overall Trends",
