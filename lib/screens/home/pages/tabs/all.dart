@@ -1,4 +1,5 @@
 import 'package:aquafusion/prompts/insertnewabw.dart';
+import 'package:aquafusion/services/mqtt_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,6 +11,7 @@ class All extends StatefulWidget {
 }
 
 class _AllState extends State<All> {
+  final MQTTClientWrapper mqttClient = MQTTClientWrapper();
   // Simulated data placeholders (replace with database calls)
   double feedLevel = 25.0; // Example: 25 kg
   String feedStatus = "Low Feed Levels";

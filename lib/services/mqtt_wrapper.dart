@@ -82,37 +82,37 @@ class MQTTClientWrapper {
     }
   }
 
-void _setupMqttClient() {
-  if (kIsWeb) {
-    // Initialize MqttBrowserClient for web
-    client = MqttBrowserClient.withPort(
-      'wss://2577b26ceb134221a22d8d1d904f419e.s1.eu.hivemq.cloud/mqtt',
-      'flutter_app',
-      8884,
-    );
-    print('Setting up MqttBrowserClient for web');
-  } else {
-    // Initialize MqttServerClient for mobile/desktop
-    client = MqttServerClient.withPort(
-      '2577b26ceb134221a22d8d1d904f419e.s1.eu.hivemq.cloud',
-      'flutter_app',
-      8883,
-    );
-    (client as MqttServerClient).secure = true; // Enable TLS
-    try {
-      (client as MqttServerClient).securityContext = SecurityContext.defaultContext;
-    } catch (e) {
-      print('Error setting SecurityContext: $e');
+  void _setupMqttClient() {
+    if (kIsWeb) {
+      // Initialize MqttBrowserClient for web
+      client = MqttBrowserClient.withPort(
+        'wss://2577b26ceb134221a22d8d1d904f419e.s1.eu.hivemq.cloud/mqtt',
+        'flutter_app',
+        8884,
+      );
+      print('Setting up MqttBrowserClient for web');
+    } else {
+      // Initialize MqttServerClient for mobile/desktop
+      client = MqttServerClient.withPort(
+        '2577b26ceb134221a22d8d1d904f419e.s1.eu.hivemq.cloud',
+        'flutter_app',
+        8883,
+      );
+      (client as MqttServerClient).secure = true; // Enable TLS
+      try {
+        (client as MqttServerClient).securityContext = SecurityContext.defaultContext;
+      } catch (e) {
+        print('Error setting SecurityContext: $e');
+      }
+      print('Setting up MqttServerClient for mobile/desktop');
     }
-    print('Setting up MqttServerClient for mobile/desktop');
-  }
 
-  // Shared configuration for both clients
-  client.keepAlivePeriod = 20;
-  client.onDisconnected = _onDisconnected;
-  client.onConnected = _onConnected;
-  client.onSubscribed = _onSubscribed;
-}
+    // Shared configuration for both clients
+    client.keepAlivePeriod = 20;
+    client.onDisconnected = _onDisconnected;
+    client.onConnected = _onConnected;
+    client.onSubscribed = _onSubscribed;
+  }
 
   void _subscribeToTopic(String topicName) {
     print('Subscribing to the $topicName topic');
