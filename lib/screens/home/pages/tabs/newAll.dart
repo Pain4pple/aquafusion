@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aquafusion/prompts/insertnewabw.dart';
 import 'package:aquafusion/services/feed_level_provider.dart';
 import 'package:aquafusion/services/mqtt_service.dart';
@@ -14,6 +16,7 @@ class All extends StatefulWidget {
 }
 
 class _AllState extends State<All> {
+  // late StreamSubscription feedLevelSubscription;
     String waterStatus = "Operational";
   double ph = 8.5;
   double turbidity = 30.0;
@@ -23,16 +26,23 @@ class _AllState extends State<All> {
   @override
   void initState() {
     super.initState();
-
-    // Listen to feed level from MQTT
-    if (mounted) {
-        MQTTClientWrapper().feedLevel.listen((message) {
-          double feedLevel = double.tryParse(message.toString()) ?? 0.0;
-          // Update the feed level using Provider
-          Provider.of<FeedLevelProvider>(context, listen: false).updateFeedLevel(feedLevel);
-        });
-    }
+    // Subscribe to the MQTT feed level stream globally
+    // feedLevelSubscription = MQTTClientWrapper().feedLevel.listen((message) {
+    //   double feedLevel = double.tryParse(message.toString()) ?? 0.0;
+    //   if (mounted) {
+    //     // Update the FeedLevelProvider with the new feed level
+    //     Provider.of<FeedLevelProvider>(context, listen: false)
+    //         .updateFeedLevel(feedLevel);
+    //   }
+    // });
   }
+
+  @override
+  void dispose() {
+    // feedLevelSubscription.cancel();  // Cancel the subscription on dispose
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +111,7 @@ class _AllState extends State<All> {
                         ElevatedButton(
                           onPressed: () {
                             // Deduct 10% of the feed level but ensure it doesn't go below 0
-                            feedLevelProvider.updateFeedLevel((feedLevel * 0.9).clamp(0, double.infinity));
+                            feedLevelProvider.setFeedLevel((feedLevel * 0.9).clamp(0, double.infinity));
                           },
                           child: const Text("-10%"),
                         ),
@@ -117,7 +127,7 @@ class _AllState extends State<All> {
                         ElevatedButton(
                           onPressed: () {
                             // Add 10% to the feed level
-                            feedLevelProvider.updateFeedLevel(feedLevel * 1.1);
+                            feedLevelProvider.setFeedLevel(feedLevel * 1.1);
                           },
                           child: const Text("+10%"),
                         ),
