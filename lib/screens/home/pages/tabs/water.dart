@@ -52,6 +52,7 @@ class _WaterState extends State<Water> {
     */
 
     // Simulated updates for testing
+     if (!mounted) return;
     setState(() {
       ph = 8.3 + (0.2 - 0.4 * (DateTime.now().second % 2)); // Random variation
       turbidity = 28.0 + (1.0 * (DateTime.now().second % 2));

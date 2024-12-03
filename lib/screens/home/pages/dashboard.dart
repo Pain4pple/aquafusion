@@ -1,4 +1,4 @@
-import 'package:aquafusion/screens/home/pages/tabs/all.dart';
+import 'package:aquafusion/screens/home/pages/tabs/newAll.dart';
 import 'package:aquafusion/screens/home/pages/tabs/water.dart';
 import 'package:aquafusion/screens/home/pages/tabs/feed.dart';
 import 'package:flutter/material.dart';

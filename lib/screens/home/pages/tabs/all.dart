@@ -1,7 +1,10 @@
 import 'package:aquafusion/prompts/insertnewabw.dart';
-import 'package:aquafusion/services/mqtt_wrapper.dart';
+import 'package:aquafusion/services/mqtt_service.dart';
+import 'package:aquafusion/services/mqttstream_provider.dart';
+import 'package:aquafusion/services/stream_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class All extends StatefulWidget {
   const All({Key? key}) : super(key: key);
@@ -11,9 +14,7 @@ class All extends StatefulWidget {
 }
 
 class _AllState extends State<All> {
-  final MQTTClientWrapper mqttClient = MQTTClientWrapper();
-  // Simulated data placeholders (replace with database calls)
-  double feedLevel = 25.0; // Example: 25 kg
+  String feedLevel = ''; // Example: 25 kg
   String feedStatus = "Low Feed Levels";
   String waterStatus = "Operational";
   double ph = 8.5;
@@ -26,10 +27,12 @@ class _AllState extends State<All> {
   Future<void> fetchData() async {
     // Simulate API call delay and replace with real database calls
     await Future.delayed(const Duration(seconds: 1));
+     if (!mounted) return;
     setState(() {
       // Update with data fetched from the database
-      feedLevel = 20.0; // Example: New feed level
-      feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+      // feedLevel = 20.0; // Example: New feed level
+      // feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+
       ph = 7.8; // Example: New pH value
       turbidity = 25.0;
       salinity = 0.15;
@@ -41,7 +44,14 @@ class _AllState extends State<All> {
   @override
   void initState() {
     super.initState();
-    fetchData(); // Fetch initial data
+    MQTTClientWrapper().feedLevel.listen((message) {
+      print("Received feed level: $message");  // Debug print
+      setState(() {
+        // feedLevel = double.tryParse(message.toString()) ?? 0.0;
+        feedLevel = message;
+        // feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+      });
+    });
   }
 
   @override
@@ -93,8 +103,9 @@ class _AllState extends State<All> {
                   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 Icon(Icons.feed, size: 50, color: Colors.red),
+                
                 Text(
-                  "${feedLevel.toStringAsFixed(1)} kg remaining",
+                  "${feedLevel}%",
                   style: GoogleFonts.poppins(fontSize: 16),
                 ),
                 const SizedBox(height: 16),
@@ -105,8 +116,8 @@ class _AllState extends State<All> {
                         onPressed: () {
                           setState(() {
                           // Deduct 10% of the feed level but ensure it doesn't go below 0
-                            feedLevel = (feedLevel * 0.9).clamp(0, double.infinity);
-                            feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+                            // feedLevel = (feedLevel * 0.9).clamp(0, double.infinity);
+                            // feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
                           });
                         },
                         child: const Text("-10%"),
@@ -124,8 +135,8 @@ class _AllState extends State<All> {
                         onPressed: () {
                           setState(() {
                           // Add 10% to the feed level
-                            feedLevel = feedLevel * 1.1;
-                            feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
+                            // feedLevel = feedLevel * 1.1;
+                            // feedStatus = feedLevel < 30 ? "Low Feed Levels" : "Normal";
                           });
                         },
                         child: const Text("+10%"),

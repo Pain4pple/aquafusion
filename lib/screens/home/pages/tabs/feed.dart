@@ -32,6 +32,7 @@ class _FeedScreenState extends State<FeedScreen> {
 
   // Mock database fetch
   Future<void> _fetchDataFromDatabase() async {
+    if (!mounted) return;
     setState(() {
       monthlyFeedUsage = 40.0; // Example value
       feedUsageData = [

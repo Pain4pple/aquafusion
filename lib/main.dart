@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:aquafusion/screens/wrapper.dart';
 import 'package:aquafusion/services/auth.dart';
-import 'package:aquafusion/services/mqtt_wrapper.dart';
+import 'package:aquafusion/services/feed_level_provider.dart';
+import 'package:aquafusion/services/mqtt_service.dart';
+import 'package:aquafusion/services/mqttstream_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,7 +24,12 @@ Future <void> main()async{
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => FeedLevelProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
