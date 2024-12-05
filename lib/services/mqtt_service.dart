@@ -23,13 +23,35 @@ class MQTTClientWrapper {
   late MqttClient client;
 
   // Add StreamControllers for specific topics
-  final StreamController<String> _pHController = StreamController<String>.broadcast();
+  final StreamController<String> _maintenanceController = StreamController<String>.broadcast();
+
   final StreamController<String> _feedLevelController = StreamController<String>.broadcast();
+  final StreamController<String> _dfrController = StreamController<String>.broadcast();
+  final StreamController<String> _scheduleController = StreamController<String>.broadcast();
+  final StreamController<String> _blockageController = StreamController<String>.broadcast();
+  final StreamController<String> _lowLevelController = StreamController<String>.broadcast();
+
+  final StreamController<String> _pHController = StreamController<String>.broadcast();
   final StreamController<String> _temperatureController = StreamController<String>.broadcast();
+  final StreamController<String> _oxygenController = StreamController<String>.broadcast();
+  final StreamController<String> _turbidityController = StreamController<String>.broadcast();
+  final StreamController<String> _salinityController = StreamController<String>.broadcast();
+  
+
+  Stream<String> get maintenanceStream => _maintenanceController.stream;
+
+  Stream<String> get feedLevel => _feedLevelController.stream;
+  Stream<String> get dfrStream => _dfrController.stream;
+  Stream<String> get scheduleStream => _scheduleController.stream;
+  Stream<String> get blockageStream => _blockageController.stream;
+  Stream<String> get lowLevelStream => _lowLevelController.stream;
 
   Stream<String> get pHStream => _pHController.stream;
-  Stream<String> get feedLevel => _feedLevelController.stream;
   Stream<String> get temperatureStream => _temperatureController.stream;
+  Stream<String> get oxygenStream => _oxygenController.stream;
+  Stream<String> get turbidityStream => _turbidityController.stream;
+  Stream<String> get salinityStream => _salinityController.stream;
+  
 
   MQTTClientWrapper._internal();
 
@@ -51,9 +73,20 @@ class MQTTClientWrapper {
       _setupMqttClient();
       await _connectClient();
       // _subscribeToTopic('aquafusion/001/#');  // Subscribe to a general topic
-      _subscribeToTopic('aquafusion/001/sensor/water/pH');  // Subscribe to pH topic
-      _subscribeToTopic('aquafusion/001/sensor/water/temp');  // Subscribe to temperature topic
-      _subscribeToTopic('aquafusion/001/sensor/feeder/feed_level');  // Subscribe to temperature topic
+      _subscribeToTopic('aquafusion/001/maintenance');  
+
+      _subscribeToTopic('aquafusion/001/sensor/feeder/feed_level');  
+      _subscribeToTopic('aquafusion/001/sensor/feeder/low_level');  
+      _subscribeToTopic('aquafusion/001/sensor/feeder/blockage');  
+      _subscribeToTopic('aquafusion/001/feeder/feed_amount');  
+      _subscribeToTopic('aquafusion/001/feeder/schedule');  
+
+      _subscribeToTopic('aquafusion/001/sensor/water/pH'); 
+      _subscribeToTopic('aquafusion/001/sensor/water/temp');  
+      _subscribeToTopic('aquafusion/001/sensor/water/DO');
+      _subscribeToTopic('aquafusion/001/sensor/water/salinity');
+      _subscribeToTopic('aquafusion/001/sensor/water/turbidity');
+
       _publishMessage('aquafusion/001/test', 'Hello, this is Flutter', false);
     } catch (e) {
       print('Error preparing MQTT client: $e');
@@ -83,7 +116,7 @@ class MQTTClientWrapper {
 
   void _setupMqttClient() {
     if (kIsWeb) {
-      client = MqttBrowserClient.withPort('aquafusion-88ayr3.a02.usw2.aws.hivemq.cloud', 'flutter_app', 8884);
+      client = MqttBrowserClient.withPort('wss://aquafusion-88ayr3.a02.usw2.aws.hivemq.cloud/mqtt', 'flutter_app', 8884);
       print('Setting up MqttBrowserClient for web');
     } else {
       client = MqttServerClient.withPort('aquafusion-88ayr3.a02.usw2.aws.hivemq.cloud', 'flutter_app', 8883);
@@ -102,26 +135,61 @@ class MQTTClientWrapper {
     client.onSubscribed = _onSubscribed;
   }
 
+  // void _subscribeToTopic(String topicName) {
+  //   print('Subscribing to the $topicName topic');
+  //   client.subscribe(topicName, MqttQos.atMostOnce);
+  //   client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+  //     final MqttPublishMessage recMess = c[0].payload as MqttPublishMessage;
+  //     var message = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+
+  //     print('YOU GOT A NEW MESSAGE:');
+  //     print(message);
+
+  //     // Dispatch message to the correct stream based on topic
+  //     if (c[0].topic == 'aquafusion/001/sensor/water/pH') {
+  //       _pHController.add(message);
+  //     } else if (c[0].topic == 'aquafusion/001/sensor/water/temp') {
+  //       _temperatureController.add(message);
+  //     } else if (c[0].topic == 'aquafusion/001/sensor/feeder/feed_level') {
+  //       _feedLevelController.add(message);
+  //     }
+  //   });
+  // }
+
   void _subscribeToTopic(String topicName) {
     print('Subscribing to the $topicName topic');
     client.subscribe(topicName, MqttQos.atMostOnce);
+
+    // Define a map of topics to their respective controllers
+    final topicControllerMap = {
+      'aquafusion/001/sensor/water/pH': _pHController,
+      'aquafusion/001/sensor/water/temp': _temperatureController,
+      'aquafusion/001/sensor/water/DO': _oxygenController,
+      'aquafusion/001/sensor/water/turbidity': _turbidityController,
+      'aquafusion/001/sensor/water/salinity': _salinityController,
+      'aquafusion/001/sensor/feeder/feed_level': _feedLevelController,
+      'aquafusion/001/sensor/feeder/low_level': _lowLevelController,
+      'aquafusion/001/sensor/feeder/blockage': _blockageController,
+      'aquafusion/001/feeder/feed_amount': _dfrController,
+      'aquafusion/001/feeder/schedule': _scheduleController,
+      'aquafusion/001/maintenance': _maintenanceController,
+    };
+
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final MqttPublishMessage recMess = c[0].payload as MqttPublishMessage;
-      var message = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      final message = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      final topic = c[0].topic;
 
-      print('YOU GOT A NEW MESSAGE:');
-      print(message);
+      print('Received message: "$message" from topic: "$topic"');
 
-      // Dispatch message to the correct stream based on topic
-      if (c[0].topic == 'aquafusion/001/sensor/water/pH') {
-        _pHController.add(message);
-      } else if (c[0].topic == 'aquafusion/001/sensor/water/temp') {
-        _temperatureController.add(message);
-      } else if (c[0].topic == 'aquafusion/001/sensor/feeder/feed_level') {
-        _feedLevelController.add(message);
+      // Dispatch message to the appropriate controller if the topic exists in the map
+      if (topicControllerMap.containsKey(topic)) {
+        topicControllerMap[topic]?.add(message);
+      } else {
+        print('No controller found for topic: $topic');
       }
     });
-  }
+}
 
   Stream<String> getMessages(String topic) async* {
     if (client.connectionStatus!.state != MqttConnectionState.connected) {

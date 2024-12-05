@@ -1,8 +1,13 @@
 import 'dart:async';
 
 import 'package:aquafusion/prompts/insertnewabw.dart';
-import 'package:aquafusion/services/feed_level_provider.dart';
+import 'package:aquafusion/services/providers/feed_level_provider.dart';
 import 'package:aquafusion/services/mqtt_service.dart';
+import 'package:aquafusion/services/providers/dO_provider.dart';
+import 'package:aquafusion/services/providers/pH_provider.dart';
+import 'package:aquafusion/services/providers/salinity_provider.dart';
+import 'package:aquafusion/services/providers/temp_provider.dart';
+import 'package:aquafusion/services/providers/turbidity_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -148,11 +153,36 @@ class _AllState extends State<All> {
                   style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                _buildReadingCard("pH", ph, "Average: Last 2 mins"),
-                _buildReadingCard("Turbidity (NTU)", turbidity, "Average: Last 2 mins"),
-                _buildReadingCard("Salinity (ppt)", salinity, "Average: Last 2 mins"),
-                _buildReadingCard("Dissolved Oxygen (mg/L)", dissolvedOxygen, "Average: Last 2 mins"),
-                _buildReadingCard("Temperature (°C)", temperature, "Average: Last 2 mins"),
+                Consumer<pHProvider>(
+                  builder: (context, pHProvider, child) {
+                    double pH = pHProvider.pH;
+                    return _buildReadingCard("pH", pH, "Average: Last 2 mins");
+                  },
+                ),
+                Consumer<turbidityProvider>(
+                  builder: (context, turbidityProvider, child) {
+                    double turbidity = turbidityProvider.turbidity;
+                    return _buildReadingCard("Turbidity (NTU)", turbidity, "Average: Last 2 mins");
+                  },
+                ),
+                Consumer<salinityProvider>(
+                  builder: (context, salinityProvider, child) {
+                    double salinity = salinityProvider.salinity;
+                    return _buildReadingCard("Salinity (ppt)", salinity, "Average: Last 2 mins");
+                  },
+                ),
+                Consumer<oxygenProvider>(
+                  builder: (context, oxygenProvider, child) {
+                    double dissolvedOxygen = oxygenProvider.oxygen;
+                    return _buildReadingCard("Dissolved Oxygen (mg/L)", dissolvedOxygen, "Average: Last 2 mins");
+                  },
+                ),
+                Consumer<tempProvider>(
+                  builder: (context, tempProvider, child) {
+                    double temperature = tempProvider.temp;
+                    return _buildReadingCard("Temperature (°C)", temperature, "Average: Last 2 mins");
+                  },
+                ),
               ],
             ),
           ),
