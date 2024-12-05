@@ -18,7 +18,7 @@ class _SetupState extends State<Setup> {
   final _formKey = GlobalKey<FormState>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final List<String> optionsSpecies = ['Nile Tilapia', 'Milkfish'];  
+  final List<String> optionsSpecies = ['Tilapia', 'Milkfish'];  
   final List<String> optionsLifestage = ['Fingerling', 'Juvenile','Grower','Finisher'];  
   String? species;
   String? lifestage;

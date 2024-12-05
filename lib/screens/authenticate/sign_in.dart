@@ -1,9 +1,10 @@
+import 'package:aquafusion/screens/authenticate/forgot_pass.dart';
 import 'package:flutter/material.dart';
 import 'package:aquafusion/services/auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignIn extends StatefulWidget {
-  final Function toggleView;
+  final Function(String) toggleView;
   const SignIn({super.key, required this.toggleView});
   @override
   State<SignIn> createState() => _SignInState();
@@ -149,7 +150,7 @@ class _SignInState extends State<SignIn> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                             widget.toggleView();
+                             widget.toggleView('register');
                           },
                           child: const Text(
                             'Create an account',
@@ -160,7 +161,7 @@ class _SignInState extends State<SignIn> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            // Handle forgot password logic
+                             widget.toggleView('forgotPassword');
                           },
                           child: const Text(
                             'Forgot Password?',

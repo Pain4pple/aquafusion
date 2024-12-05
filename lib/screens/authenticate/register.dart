@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class Register extends StatefulWidget {
   // const Register({super.key});
-  final Function toggleView;
+  final Function(String) toggleView;
   const Register ({super.key, required this.toggleView});
   @override
   State<Register> createState() => _RegisterState();
@@ -250,7 +250,7 @@ class _RegisterState extends State<Register> {
                     }),
                   const SizedBox(height: 12),
                     _buildGradientButton('Cancel', onPressed: () {
-                      widget.toggleView();
+                      widget.toggleView('signin');
                     }, colors: [const Color(0xfff4f6ff), const Color.fromARGB(171, 194, 207, 231)],textColor: const Color(0xff5d9cec)),
                   const SizedBox(height: 16),
                   ],

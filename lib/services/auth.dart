@@ -16,6 +16,17 @@ class AuthService{
   }
 
 
+  //forgot pw anonymously
+  Future forgotPass(String email) async{
+    try{
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
+
+
   //sign in anonymously
   Future signInAnon() async{
     try{
