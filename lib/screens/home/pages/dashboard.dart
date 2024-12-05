@@ -40,7 +40,7 @@ class DashboardScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            Center(child: All()),
+            All(),
             const Center(child: Water()),
             Center(child: Feed()),
           ],

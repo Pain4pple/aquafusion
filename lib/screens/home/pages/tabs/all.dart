@@ -135,6 +135,7 @@ Future<Map<String, double>> _getOptimumRange(String species, String parameter) a
 
         return SingleChildScrollView(
          child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
         children: [
           // Header section
           Padding(
