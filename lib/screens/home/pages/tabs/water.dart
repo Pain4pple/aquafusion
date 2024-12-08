@@ -53,80 +53,96 @@ class _WaterState extends State<Water> {
               runSpacing: 16.0, // Space between the rows
               children: [
                 // pH
-                Consumer<pHProvider>(builder: (context, pHProvider, child) {
-                  double pH = pHProvider.pH;
-                  final optimumParam = pHProvider.optimumParameter;
-                  double optimumMin = optimumParam?.optimumMin ?? 6.5;
-                  double optimumMax = optimumParam?.optimumMax ?? 9.0;
-                  return _buildReadingCard(
-                    "pH",
-                    pH,
-                    optimumMin,
-                    optimumMax,
-                    PHGauge(
-                      pH: pH,
-                      optimumMin: optimumMin,
-                      optimumMax: optimumMax,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Consumer<pHProvider>(builder: (context, pHProvider, child) {
+                        double pH = pHProvider.pH;
+                        final optimumParam = pHProvider.optimumParameter;
+                        double optimumMin = optimumParam?.optimumMin ?? 6.5;
+                        double optimumMax = optimumParam?.optimumMax ?? 9.0;
+                        return _buildReadingCard(
+                          "pH",
+                          pH,
+                          optimumMin,
+                          optimumMax,
+                          PHGauge(
+                            pH: pH,
+                            optimumMin: optimumMin,
+                            optimumMax: optimumMax,
+                          ),
+                        );
+                      }),
                     ),
-                  );
-                }),
-
-                // Turbidity
-                Consumer<turbidityProvider>(builder: (context, turbidityProvider, child) {
-                  double turbidity = turbidityProvider.turbidity;
-                  final optimumParam = turbidityProvider.optimumParameter;
-                  double optimumMin = optimumParam?.optimumMin ?? 0.0;
-                  double optimumMax = optimumParam?.optimumMax ?? 25.0;
-                  return _buildReadingCard(
-                    "Turbidity (NTU)",
-                    turbidity,
-                    optimumMin,
-                    optimumMax,
-                    turbidityGauge(
-                      parameter_value: turbidity,
-                      optimumMin: optimumMin,
-                      optimumMax: optimumMax,
+                    
+                    // Turbidity
+                    Expanded(
+                      child: Consumer<turbidityProvider>(builder: (context, turbidityProvider, child) {
+                        double turbidity = turbidityProvider.turbidity;
+                        final optimumParam = turbidityProvider.optimumParameter;
+                        double optimumMin = optimumParam?.optimumMin ?? 0.0;
+                        double optimumMax = optimumParam?.optimumMax ?? 25.0;
+                        return _buildReadingCard(
+                          "Turbidity (NTU)",
+                          turbidity,
+                          optimumMin,
+                          optimumMax,
+                          turbidityGauge(
+                            parameter_value: turbidity,
+                            optimumMin: optimumMin,
+                            optimumMax: optimumMax,
+                          ),
+                        );
+                      }),
                     ),
-                  );
-                }),
+                  ],
+                ),
 
                 // Salinity
-                Consumer<salinityProvider>(builder: (context, salinityProvider, child) {
-                  double salinity = salinityProvider.salinity;
-                  final optimumParam = salinityProvider.optimumParameter;
-                  double optimumMin = optimumParam?.optimumMin ?? 0.0;
-                  double optimumMax = optimumParam?.optimumMax ?? 5.0;
-                  return _buildReadingCard(
-                    "Salinity (ppt)",
-                    salinity,
-                    optimumMin,
-                    optimumMax,
-                    salinityGauge(
-                      parameter_value: salinity,
-                      optimumMin: optimumMin,
-                      optimumMax: optimumMax,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Consumer<salinityProvider>(builder: (context, salinityProvider, child) {
+                        double salinity = salinityProvider.salinity;
+                        final optimumParam = salinityProvider.optimumParameter;
+                        double optimumMin = optimumParam?.optimumMin ?? 0.0;
+                        double optimumMax = optimumParam?.optimumMax ?? 5.0;
+                        return _buildReadingCard(
+                          "Salinity (ppt)",
+                          salinity,
+                          optimumMin,
+                          optimumMax,
+                          salinityGauge(
+                            parameter_value: salinity,
+                            optimumMin: optimumMin,
+                            optimumMax: optimumMax,
+                          ),
+                        );
+                      }),
                     ),
-                  );
-                }),
-
-                // Dissolved Oxygen
-                Consumer<oxygenProvider>(builder: (context, oxygenProvider, child) {
-                  final optimumParam = oxygenProvider.optimumParameter;
-                  double dissolvedOxygen = oxygenProvider.oxygen;
-                  double optimumMin = optimumParam?.optimumMin ?? 5.0;
-                  double optimumMax = optimumParam?.optimumMax ?? 10.0;
-                  return _buildReadingCard(
-                    "Dissolved Oxygen (ppm)",
-                    dissolvedOxygen,
-                    optimumMin,
-                    optimumMax,
-                    oxygenGauge(
-                      parameter_value: dissolvedOxygen,
-                      optimumMin: optimumMin,
-                      optimumMax: optimumMax,
+                    
+                    // Dissolved Oxygen
+                    Expanded(
+                      child: Consumer<oxygenProvider>(builder: (context, oxygenProvider, child) {
+                        final optimumParam = oxygenProvider.optimumParameter;
+                        double dissolvedOxygen = oxygenProvider.oxygen;
+                        double optimumMin = optimumParam?.optimumMin ?? 5.0;
+                        double optimumMax = optimumParam?.optimumMax ?? 10.0;
+                        return _buildReadingCard(
+                          "Dissolved Oxygen (ppm)",
+                          dissolvedOxygen,
+                          optimumMin,
+                          optimumMax,
+                          oxygenGauge(
+                            parameter_value: dissolvedOxygen,
+                            optimumMin: optimumMin,
+                            optimumMax: optimumMax,
+                          ),
+                        );
+                      }),
                     ),
-                  );
-                }),
+                  ],
+                ),
 
                 // Temperature
                 Consumer<tempProvider>(builder: (context, tempProvider, child) {

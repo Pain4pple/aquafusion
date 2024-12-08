@@ -158,7 +158,7 @@ class MQTTClientWrapper {
 
   void _subscribeToTopic(String topicName) {
     print('Subscribing to the $topicName topic');
-    client.subscribe(topicName, MqttQos.atMostOnce);
+    client.subscribe(topicName, MqttQos.atLeastOnce);
 
     // Define a map of topics to their respective controllers
     final topicControllerMap = {

@@ -209,6 +209,7 @@ class _AllState extends State<All> {
                                       Expanded(
                                         child: Card(
                                           color:Colors.white,
+                                          elevation: 0,
                                           child: Column(
                                             children: [
                                               Text(
@@ -237,6 +238,7 @@ class _AllState extends State<All> {
                                     children: [
                                       Expanded(
                                         child: Card(
+                                          elevation: 0,
                                           color:Colors.white,
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
