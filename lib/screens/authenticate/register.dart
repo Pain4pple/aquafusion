@@ -224,15 +224,20 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                       obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty ) {
-                            return 'Password is required';
-                          }
-                          if(value.length<6){
-                            return 'Password must be 6+ characters long';
-                          }
-                          return null;
-                        },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password is required';
+                        }
+                        
+                        // Regular expression for the password policy
+                        final passwordRegex = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$');
+                        
+                        if (!passwordRegex.hasMatch(value)) {
+                          return 'Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character';
+                        }
+
+                        return null;
+                      },
                       onChanged: (val){
                         setState(() {
                           password = val;

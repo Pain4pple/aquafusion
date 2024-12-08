@@ -18,7 +18,7 @@ class _SetupState extends State<Setup> {
   final _formKey = GlobalKey<FormState>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final List<String> optionsSpecies = ['Tilapia', 'Milkfish'];  
+  List<String> optionsSpecies = [];  
   final List<String> optionsLifestage = ['Fingerling', 'Juvenile','Grower','Finisher'];  
   String? species;
   String? lifestage;
@@ -26,6 +26,7 @@ class _SetupState extends State<Setup> {
   String survivalRate = '';
   String averageBodyWeight = '';
   String populationCount = '';
+  bool isLoading = true;
 
   void _completeSetup() async {
     User? user = _auth.currentUser;
@@ -39,11 +40,37 @@ class _SetupState extends State<Setup> {
         'setup': true,
       });
 
-      // Navigate to main app screen
-      Navigator.pushReplacementNamed(context, '/home');
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/');
+      }
     }
   }
   
+  @override
+  void initState() {
+    super.initState();
+    _fetchSpecies();
+  }
+
+  Future<void> _fetchSpecies() async {
+    try {
+      final QuerySnapshot snapshot =
+          await _firestore.collection('species').get(); // Adjust collection name if needed
+      final List<String> fetchedSpecies = snapshot.docs
+          .map((doc) => doc.id)
+          .toList(); // Adjust field name if needed
+      setState(() {
+        optionsSpecies = fetchedSpecies;
+        isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching species: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
  Widget build(BuildContext context) {
     return Scaffold(
@@ -98,18 +125,18 @@ class _SetupState extends State<Setup> {
                           fontWeight: FontWeight.w400, 
                         ),     
                       ),
-                      value: optionsSpecies.contains(species) ? species : null,
-                      onChanged: (newValue) {
-                        setState(() {
-                          species = newValue!;
-                        });
-                      },
+                      value: optionsSpecies.isNotEmpty ? optionsSpecies.first : null,
                       items: optionsSpecies.map((option) {
                         return DropdownMenuItem<String>(
                           value: option,
                           child: Text(option),
                         );
                       }).toList(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          species = newValue!;
+                        });
+                      },
                       icon: const Icon(Icons.expand_more, color: Colors.blue),
                       style: GoogleFonts.poppins(color: Colors.black, fontSize: 16),
                     ),
