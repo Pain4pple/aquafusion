@@ -13,6 +13,7 @@ import 'package:aquafusion/services/providers/turbidity_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -35,18 +36,20 @@ class _AllState extends State<All> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String? userSpecies;
-  late String svgContent;
+  String? svgContent;
   double fillHeight = 50.0;
   Map<String, double> pHRange = {};
   Map<String, double> tempRange = {};
   Map<String, double> turbidityRange = {};
   Map<String, double> doRange = {};
   Map<String, double> salinityRange = {};
-
+        double heightAdjustment=0;
+      
   @override
   void initState() {
     super.initState();
     _initializeRanges();
+    _loadSvg();
   }
 
   @override
@@ -128,18 +131,12 @@ class _AllState extends State<All> {
 
   Future<void> _loadSvg() async {
     final svgFile = await DefaultAssetBundle.of(context)
-        .loadString('assets/feed_level.svg');
+        .loadString('assets/images/feed_level.svg');
     setState(() {
       svgContent = svgFile;
     });
   }
 
-  String _updateSvgContent(double newHeight) {
-    return svgContent.replaceAll(
-      'height="50"', // Replace the original value
-      'height="$newHeight"',
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -220,8 +217,11 @@ class _AllState extends State<All> {
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                              Icon(Icons.feed,
-                                                  size: 50, color: Colors.red),
+                                              SvgPicture.string(
+                                                '<svg width="113" height="117" viewBox="0 0 113 117" fill="none" xmlns="http://www.w3.org/2000/svg"><mask id="path-1-inside-1_4_3" fill="white"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 13C13 5.8203 18.8203 0 26 0H86C93.1797 0 99 5.8203 99 13V75C99 78.2146 97.8333 81.1566 95.9001 83.4258C95.4951 84.2344 94.8816 84.98 94.0377 85.596L75 99.4943V108C75 112.971 70.9706 117 66 117H46C41.0294 117 37 112.971 37 108V98.7643L20.7332 86.8889C16.1776 84.8677 13 80.3049 13 75V13Z"/></mask><path fill-rule="evenodd" clip-rule="evenodd" d="M13 13C13 5.8203 18.8203 0 26 0H86C93.1797 0 99 5.8203 99 13V75C99 78.2146 97.8333 81.1566 95.9001 83.4258C95.4951 84.2344 94.8816 84.98 94.0377 85.596L75 99.4943V108C75 112.971 70.9706 117 66 117H46C41.0294 117 37 112.971 37 108V98.7643L20.7332 86.8889C16.1776 84.8677 13 80.3049 13 75V13Z" fill="#F1F4FC"/><path d="M95.9001 83.4258L93.6165 81.4803L93.3806 81.7572L93.2178 82.0823L95.9001 83.4258ZM94.0377 85.596L95.8066 88.019L95.8066 88.019L94.0377 85.596ZM75 99.4943L73.2311 97.0713L72 97.97V99.4943H75ZM37 98.7643H40V97.24L38.7689 96.3412L37 98.7643ZM20.7332 86.8889L22.5021 84.4659L22.243 84.2767L21.9498 84.1466L20.7332 86.8889ZM26 -3C17.1634 -3 10 4.16344 10 13H16C16 7.47715 20.4772 3 26 3V-3ZM86 -3H26V3H86V-3ZM102 13C102 4.16345 94.8366 -3 86 -3V3C91.5228 3 96 7.47715 96 13H102ZM102 75V13H96V75H102ZM98.1838 85.3713C100.562 82.5798 102 78.954 102 75H96C96 77.4751 95.1046 79.7334 93.6165 81.4803L98.1838 85.3713ZM95.8066 88.019C97.0309 87.1253 97.9602 86.0117 98.5825 84.7693L93.2178 82.0823C93.0301 82.4571 92.7323 82.8347 92.2688 83.173L95.8066 88.019ZM76.7689 101.917L95.8066 88.019L92.2688 83.173L73.2311 97.0713L76.7689 101.917ZM72 99.4943V108H78V99.4943H72ZM72 108C72 111.314 69.3137 114 66 114V120C72.6274 120 78 114.627 78 108H72ZM66 114H46V120H66V114ZM46 114C42.6863 114 40 111.314 40 108H34C34 114.627 39.3726 120 46 120V114ZM40 108V98.7643H34V108H40ZM18.9643 89.3119L35.2311 101.187L38.7689 96.3412L22.5021 84.4659L18.9643 89.3119ZM10 75C10 81.5338 13.916 87.1464 19.5166 89.6311L21.9498 84.1466C18.4391 82.5891 16 79.0761 16 75H10ZM10 13V75H16V13H10Z" fill="#007FB5" mask="url(#path-1-inside-1_4_3)"/><rect x="92" y="80" width="71" height="${calculateY(feedLevel)}" transform="rotate(180 92 80)" fill="#FEC483"/><rect x="71" y="112.046" width="28" height="27" rx="5" transform="rotate(-179.906 71 112.046)" fill="#FEB77F"/><path d="M59.0165 100.534C57.4611 101.44 55.5389 101.44 53.9835 100.534L23.5716 82.8205C19.16 80.251 20.9827 73.5 26.0881 73.5L86.9119 73.5C92.0173 73.5 93.84 80.251 89.4284 82.8205L59.0165 100.534Z" fill="#FEC483"/></svg>',
+                                                height: 200,
+                                                width: 200,
+                                              ),
                                               Text(
                                                 "${feedLevel.toStringAsFixed(1)}%",
                                                 style: TextStyle(fontSize: 16),
@@ -517,7 +517,9 @@ Widget _buildStatusCard({
     ),
   );
 }
-
+  double calculateY(double feedLevel) {
+    return (feedLevel/100)*71;
+  }
 // Method to build reading cards
 Widget _buildReadingCard(String title, double value, double optimumMin,
     double optimumMax, double warningMargin, String description, String s) {

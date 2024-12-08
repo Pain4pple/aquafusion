@@ -87,7 +87,7 @@ class _HomeState extends State<Home> {
       body: Row(
         children: <Widget>[
           Container(
-            width: 105, 
+            width: 115, 
              decoration: const BoxDecoration(
                gradient: LinearGradient(
                colors: [Color(0xff529cea), Color(0xffa8e0fd)],
