@@ -209,6 +209,10 @@ class MQTTClientWrapper {
     }
   }
 
+  void publishMessage(String topic, String message, bool retain) {
+    _publishMessage(topic, message, retain);
+  }
+  
   void _publishMessage(String topic, String message, bool retainBool) {
     final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
     builder.addString(message);

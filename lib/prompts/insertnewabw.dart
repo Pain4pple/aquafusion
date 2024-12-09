@@ -1,6 +1,10 @@
+import 'package:aquafusion/services/mqtt_service.dart';
 import 'package:flutter/material.dart';
+  import 'dart:convert'; // Import for JSON encoding
 
 class InsertNewAbwPrompt extends StatefulWidget {
+
+  const InsertNewAbwPrompt({Key? key}) : super(key: key);
   @override
   _InsertNewAbwPromptState createState() => _InsertNewAbwPromptState();
 }
@@ -9,7 +13,7 @@ class _InsertNewAbwPromptState extends State<InsertNewAbwPrompt> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _abwController = TextEditingController();
   final TextEditingController _stockingDensityController = TextEditingController();
-
+  
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -59,7 +63,7 @@ class _InsertNewAbwPromptState extends State<InsertNewAbwPrompt> {
           ],
         ),
       ),
-      actions: [
+  actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text("Cancel"),
@@ -67,11 +71,11 @@ class _InsertNewAbwPromptState extends State<InsertNewAbwPrompt> {
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              // Perform the action with the entered values
+              // Retrieve input values
               double abw = double.parse(_abwController.text);
               double stockingDensity = double.parse(_stockingDensityController.text);
 
-              // Example action: Print to console
+              sendNewAbwDensity(abw,stockingDensity);
               print("ABW: $abw, Stocking Density: $stockingDensity");
 
               // Close the dialog
@@ -83,4 +87,24 @@ class _InsertNewAbwPromptState extends State<InsertNewAbwPrompt> {
       ],
     );
   }
+
+void sendNewAbwDensity(double abw, double density) {
+   final mqttClientWrapper = MQTTClientWrapper();
+  // Create the payload
+  final payload = {
+    'abw': abw,
+    'population': density,
+  };
+
+  final jsonPayload = jsonEncode(payload);
+
+  mqttClientWrapper.publishMessage(
+    'aquafusion/001/command/new_abw_density',
+    jsonPayload,
+    false, // retain: false
+  );
+
+  print('Payload sent: $jsonPayload');
+}
+
 }
