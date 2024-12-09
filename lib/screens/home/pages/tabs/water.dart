@@ -49,14 +49,15 @@ class _WaterState extends State<Water> {
             // Wrap the Row with a Wrap widget for responsive design
             Wrap(
               spacing: 16.0, // Space between the children in the wrap
-        
+
               runSpacing: 16.0, // Space between the rows
               children: [
                 // pH
                 Row(
                   children: [
                     Expanded(
-                      child: Consumer<pHProvider>(builder: (context, pHProvider, child) {
+                      child: Consumer<pHProvider>(
+                          builder: (context, pHProvider, child) {
                         double pH = pHProvider.pH;
                         final optimumParam = pHProvider.optimumParameter;
                         double optimumMin = optimumParam?.optimumMin ?? 6.5;
@@ -74,10 +75,11 @@ class _WaterState extends State<Water> {
                         );
                       }),
                     ),
-                    
+
                     // Turbidity
                     Expanded(
-                      child: Consumer<turbidityProvider>(builder: (context, turbidityProvider, child) {
+                      child: Consumer<turbidityProvider>(
+                          builder: (context, turbidityProvider, child) {
                         double turbidity = turbidityProvider.turbidity;
                         final optimumParam = turbidityProvider.optimumParameter;
                         double optimumMin = optimumParam?.optimumMin ?? 0.0;
@@ -95,14 +97,9 @@ class _WaterState extends State<Water> {
                         );
                       }),
                     ),
-                  ],
-                ),
-
-                // Salinity
-                Row(
-                  children: [
                     Expanded(
-                      child: Consumer<salinityProvider>(builder: (context, salinityProvider, child) {
+                      child: Consumer<salinityProvider>(
+                          builder: (context, salinityProvider, child) {
                         double salinity = salinityProvider.salinity;
                         final optimumParam = salinityProvider.optimumParameter;
                         double optimumMin = optimumParam?.optimumMin ?? 0.0;
@@ -120,10 +117,16 @@ class _WaterState extends State<Water> {
                         );
                       }),
                     ),
-                    
+                  ],
+                ),
+
+                // Salinity
+                Row(
+                  children: [
                     // Dissolved Oxygen
                     Expanded(
-                      child: Consumer<oxygenProvider>(builder: (context, oxygenProvider, child) {
+                      child: Consumer<oxygenProvider>(
+                          builder: (context, oxygenProvider, child) {
                         final optimumParam = oxygenProvider.optimumParameter;
                         double dissolvedOxygen = oxygenProvider.oxygen;
                         double optimumMin = optimumParam?.optimumMin ?? 5.0;
@@ -141,27 +144,27 @@ class _WaterState extends State<Water> {
                         );
                       }),
                     ),
+                    // Temperature
+                    Consumer<tempProvider>(
+                        builder: (context, tempProvider, child) {
+                      double temperature = tempProvider.temp;
+                      final optimumParam = tempProvider.optimumParameter;
+                      double optimumMin = optimumParam?.optimumMin ?? 28.0;
+                      double optimumMax = optimumParam?.optimumMax ?? 32.0;
+                      return _buildReadingCard(
+                        "Temperature (°C)",
+                        temperature,
+                        optimumMin,
+                        optimumMax,
+                        tempGauge(
+                          parameter_value: temperature,
+                          optimumMin: optimumMin,
+                          optimumMax: optimumMax,
+                        ),
+                      );
+                    }),
                   ],
                 ),
-
-                // Temperature
-                Consumer<tempProvider>(builder: (context, tempProvider, child) {
-                  double temperature = tempProvider.temp;
-                  final optimumParam = tempProvider.optimumParameter;
-                  double optimumMin = optimumParam?.optimumMin ?? 28.0;
-                  double optimumMax = optimumParam?.optimumMax ?? 32.0;
-                  return _buildReadingCard(
-                    "Temperature (°C)",
-                    temperature,
-                    optimumMin,
-                    optimumMax,
-                    tempGauge(
-                      parameter_value: temperature,
-                      optimumMin: optimumMin,
-                      optimumMax: optimumMax,
-                    ),
-                  );
-                }),
               ],
             ),
           ],
@@ -171,7 +174,8 @@ class _WaterState extends State<Water> {
   }
 }
 
-Widget _buildReadingCard(String parameterName, double value, double min, double max, Widget gauge) {
+Widget _buildReadingCard(
+    String parameterName, double value, double min, double max, Widget gauge) {
   return Card(
     color: Color(0xfffeffff),
     elevation: 0,

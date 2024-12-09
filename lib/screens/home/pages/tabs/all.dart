@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:aquafusion/prompts/insertnewabw.dart';
 import 'package:aquafusion/screens/home/components/feedlevel.dart';
 import 'package:aquafusion/services/auth.dart';
+import 'package:aquafusion/services/providers/dfr_provider.dart';
 import 'package:aquafusion/services/providers/feed_level_provider.dart';
 import 'package:aquafusion/services/mqtt_service.dart';
 import 'package:aquafusion/services/providers/dO_provider.dart';
@@ -118,7 +119,7 @@ class _AllState extends State<All> {
       final doRangeResult =
           await _getOptimumRange(userSpecies!, 'dissolvedOxygen');
       final salinity = await _getOptimumRange(userSpecies!, 'salinity');
-
+      if (mounted) {
       setState(() {
         pHRange = pH;
         tempRange = temp;
@@ -126,6 +127,7 @@ class _AllState extends State<All> {
         doRange = doRangeResult;
         salinityRange = salinity;
       });
+      }
     }
   }
 
@@ -258,13 +260,21 @@ class _AllState extends State<All> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Text(
-                                                  "0 ",
-                                                  style: GoogleFonts.poppins(
-                                                      fontSize: 28,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Color(0xff202976)),
+                                                Consumer<dfrProvider>(
+                                                  builder: (context,
+                                                      dfrProvider, child) {
+                                                    return Text(
+                                                      "${dfrProvider.dfr} ", // Display the DFR value here
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                        fontSize: 28,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Color.fromARGB(255, 102, 106, 143),
+                                                      ),
+                                                    );
+                                                  },
                                                 ),
                                                 Text(
                                                   "per feeding",

@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
     const DashboardScreen(),
     FeedingScheduleScreen(),
     Exportreport(),
-    DevMode(),
+    // DevMode(),
     SettingsScreen(),
   ];
 
@@ -107,8 +107,8 @@ class _HomeState extends State<Home> {
                 _buildNavItem(Icons.dashboard, 'Dashboard', 0),
                 _buildNavItem(FontAwesomeIcons.fish, 'Feeding', 1),
                 _buildNavItem(Icons.note, 'Reports', 2),
-                _buildNavItem(Icons.developer_mode_rounded, 'Dev Mode', 3),
-                _buildNavItem(Icons.settings, 'Settings', 4),
+                // _buildNavItem(Icons.developer_mode_rounded, 'Dev Mode', 3),
+                _buildNavItem(Icons.settings, 'Settings', 3),
                 LogoutButton(
                   icon: Icons.logout,
                   title: 'Logout',
