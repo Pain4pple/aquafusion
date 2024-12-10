@@ -125,7 +125,7 @@ class _SetupState extends State<Setup> {
                           fontWeight: FontWeight.w400, 
                         ),     
                       ),
-                      value: optionsSpecies.isNotEmpty ? optionsSpecies.first : null,
+                      value: species,
                       items: optionsSpecies.map((option) {
                         return DropdownMenuItem<String>(
                           value: option,

@@ -145,24 +145,30 @@ class _WaterState extends State<Water> {
                       }),
                     ),
                     // Temperature
-                    Consumer<tempProvider>(
-                        builder: (context, tempProvider, child) {
-                      double temperature = tempProvider.temp;
-                      final optimumParam = tempProvider.optimumParameter;
-                      double optimumMin = optimumParam?.optimumMin ?? 28.0;
-                      double optimumMax = optimumParam?.optimumMax ?? 32.0;
-                      return _buildReadingCard(
-                        "Temperature (°C)",
-                        temperature,
-                        optimumMin,
-                        optimumMax,
-                        tempGauge(
-                          parameter_value: temperature,
-                          optimumMin: optimumMin,
-                          optimumMax: optimumMax,
-                        ),
-                      );
-                    }),
+                    Expanded(
+                      child: Consumer<tempProvider>(
+                          builder: (context, tempProvider, child) {
+                        double temperature = tempProvider.temp;
+                        final optimumParam = tempProvider.optimumParameter;
+                        double optimumMin = optimumParam?.optimumMin ?? 28.0;
+                        double optimumMax = optimumParam?.optimumMax ?? 32.0;
+                        return _buildReadingCard(
+                          "Temperature (°C)",
+                          temperature,
+                          optimumMin,
+                          optimumMax,
+                          tempGauge(
+                            parameter_value: temperature,
+                            optimumMin: optimumMin,
+                            optimumMax: optimumMax,
+                          ),
+                        );
+                      }),
+                    ),
+                    
+                    const Expanded(
+                      child: Row()
+                    )
                   ],
                 ),
               ],

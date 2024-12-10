@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aquafusion/screens/wrapper.dart';
 import 'package:aquafusion/services/auth.dart';
+import 'package:aquafusion/services/notifications_service.dart';
 import 'package:aquafusion/services/providers/feed_level_provider.dart';
 import 'package:aquafusion/services/mqtt_service.dart';
 import 'package:aquafusion/services/mqtt_stream_service.dart';
@@ -31,9 +32,13 @@ Future <void> main()async{
   final mqttService = MQTTStreamService();
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  // await NotificationService.init();
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
   );
+  final MQTTClientWrapper mqttClient = MQTTClientWrapper();
+    mqttClient.prepareMqttClient();
+
   runApp(
     MultiProvider(
       providers: [
@@ -53,14 +58,12 @@ Future <void> main()async{
 }
 
 class MyApp extends StatelessWidget {
-  final MQTTClientWrapper mqttClient = MQTTClientWrapper();
   final MQTTStreamService mqttService;
 
   MyApp({super.key, required this.mqttService});
 
   @override
   Widget build(BuildContext context) {
-    mqttClient.prepareMqttClient();
     mqttService.startListening();
     return StreamProvider<UserModel?>.value(
       initialData: null,

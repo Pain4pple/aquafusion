@@ -1,5 +1,8 @@
 // import 'dart:ffi';
 
+import 'dart:convert';
+
+import 'package:aquafusion/services/mqtt_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
@@ -18,6 +21,7 @@ class _TableSetupState extends State<TableSetup> {
   final _formKey = GlobalKey<FormState>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final mqttClient = MQTTClientWrapper();
   List<String> optionsTables = [];  
   String? selectedSpecies;
   String? selectedLifestage;
@@ -25,9 +29,9 @@ class _TableSetupState extends State<TableSetup> {
   String survivalRate = '';
   String averageBodyWeight = '';
   String populationCount = '';
-  String? feedingTable;
+  String? feedingTable='TATEH';
   bool isLoading = true;
-
+  late DocumentSnapshot userDoc;
   void _completeTableSetup() async {
     User? user = _auth.currentUser;
     if (user != null) {
@@ -36,12 +40,32 @@ class _TableSetupState extends State<TableSetup> {
         'feedingTable': feedingTable,
       });
 
+          Map<String, dynamic> payload = {
+      "uid": user!.uid, 
+      "abw": userDoc['averageBodyWeight'], 
+      "survival_rate":
+          userDoc['survivalRate'], 
+      "population_count":
+          userDoc['populationCount'], 
+      "species": userDoc['species'], 
+      "supplier": userDoc['feedingTable'], 
+      "lifestage": userDoc['lifestage'], 
+      "phoneNumber":
+          "+63${userDoc['phoneNumber']}" 
+    };
+
+    String jsonString = jsonEncode(payload);
+
+    // Publish the message to the MQTT topic
+    mqttClient.publishMessage('aquafusion/001/command/calibrate_feeder', jsonString, false);
+
       // Navigate to main app screen
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/');
       }
     }
   }
+  
   
   @override
   void initState() {
@@ -52,7 +76,7 @@ class _TableSetupState extends State<TableSetup> {
 
   Future<void> _fetchUserSpecies(User? user) async {
     try {
-      DocumentSnapshot userDoc = await _firestore.collection('users').doc(user?.uid).get();
+      userDoc = await _firestore.collection('users').doc(user?.uid).get();
       selectedSpecies = userDoc['species']; 
       selectedLifestage = userDoc['lifestage']; 
       print("$selectedSpecies is the selected species");

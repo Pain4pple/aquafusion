@@ -1,5 +1,10 @@
+import 'package:aquafusion/services/auth.dart';
+import 'package:aquafusion/services/mqtt_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 
 void main() => runApp(Feed());
 
@@ -23,18 +28,84 @@ class _FeedScreenState extends State<FeedScreen> {
   double monthlyFeedUsage = 0.0; // Placeholder for fetched data
   List<FlSpot> feedUsageData = []; // Placeholder for fetched graph data
   List<Map<String, dynamic>> feedingTable = []; // Placeholder for fetched table data
+  final AuthService _firebaseAuth = AuthService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final mqttClientWrapper = MQTTClientWrapper();
+  DateTimeRange? selectedDateRange;
+  User? user;
+  String? userName;
+  String? userPhoneNumber;
+  String? userSpecies;
+  double feedTotal=13.0;
+  late DocumentSnapshot userDoc;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchDataFromDatabase();
+  Future<void> _getUserDetails() async {
+    try {
+      user = _auth.currentUser;
+      if (user != null) {
+        userDoc = await _firestore.collection('users').doc(user!.uid).get();
+        if (userDoc.exists) {
+          setState(() {
+            userName = userDoc['firstName'] ?? 'User';
+            userPhoneNumber = userDoc['phoneNumber'] ?? 'No phone number';
+            userSpecies = userDoc['species'] ?? 'No species';
+          });
+        }
+      }
+    } catch (e) {
+       showDialogMessage(context, "Error fetching user details: $e");
+    }
+  }
+ Future<double> fetchFeedingLogs(String uid, DateTimeRange dateRange) async {
+  double totalFeedAmount = 0.0;
+
+  DateFormat firebaseFormat = DateFormat("yyyy-MM-dd HH:mm");
+  String startString = firebaseFormat.format(dateRange.start);
+  String endString = firebaseFormat.format(dateRange.end);
+
+  QuerySnapshot snapshot = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .collection('feeding_logs')
+      .where('timestamp', isGreaterThanOrEqualTo: startString)
+      .where('timestamp', isLessThanOrEqualTo: endString)
+      .get();
+
+  for (var doc in snapshot.docs) {
+
+    var data = doc.data() as Map<String, dynamic>;
+    totalFeedAmount += data['amount'] ?? 0.0;
+  print(data);
+
   }
 
+  return totalFeedAmount;
+}
+  @override
+void initState() {
+  super.initState();
+  _getUserDetails().then((_) {
+    if (user != null) {
+      final now = DateTime.now();
+      final oneMonthAgo = now.subtract(Duration(days: 30));
+      selectedDateRange = DateTimeRange(start: oneMonthAgo, end: now);
+
+      // Fetch feeding logs after user details have been fetched
+      fetchFeedingLogs(user!.uid, selectedDateRange!).then((totalFeedAmount) {
+        setState(() {
+          feedTotal = totalFeedAmount;
+        });
+      });
+    }
+  });
+    _fetchDataFromDatabase();
+}
   // Mock database fetch
   Future<void> _fetchDataFromDatabase() async {
     if (!mounted) return;
     setState(() {
-      monthlyFeedUsage = 40.0; // Example value
+      // monthlyFeedUsage = 40.0; // Example value
       feedUsageData = [
         FlSpot(1, 5),
         FlSpot(2, 8),
@@ -92,7 +163,7 @@ class _FeedScreenState extends State<FeedScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              FeedUsageCard(feedUsage: monthlyFeedUsage),
+              FeedUsageCard(feedUsage: feedTotal),
               SizedBox(height: 20),
               SizedBox(
                 height: 200, // Allocate fixed height for graph
@@ -130,7 +201,7 @@ class FeedUsageCard extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              "$feedUsage kg",
+              "${feedUsage.toStringAsFixed(2)} grams",
               style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.green),
             ),
             Text("Feed Usage past 3 weeks"),
@@ -178,7 +249,25 @@ class FeedUsageGraph extends StatelessWidget {
     );
   }
 }
-
+void showDialogMessage(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Notification'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 class FeedingTable extends StatelessWidget {
   final List<Map<String, dynamic>> data;
 

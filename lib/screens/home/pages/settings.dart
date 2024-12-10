@@ -1,4 +1,5 @@
 import 'dart:convert'; // Import the dart:convert library for JSON encoding
+import 'package:aquafusion/prompts/manual_prompt.dart';
 import 'package:aquafusion/services/auth.dart';
 import 'package:aquafusion/services/mqtt_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -43,6 +44,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  
+
 @override
   void initState() {
     _getUserDetails();
@@ -71,7 +74,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Settings",
+                            Text("Settings - For Calibration",
                                 style: GoogleFonts.poppins(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
@@ -101,6 +104,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           mqttClientWrapper.publishMessage('aquafusion/001/command/calibrate_feeder', jsonString, false);
                         },
                         child: const Text("Pair with AquaFusion Device"),
+                      ),
+            SizedBox(height: 16),
+                       ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                ManualFeed(),
+                          );
+                        },
+                        child: const Text("Manual Feed"),
                       ),
                     ],
                   ),

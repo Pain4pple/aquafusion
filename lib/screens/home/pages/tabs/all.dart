@@ -264,7 +264,7 @@ class _AllState extends State<All> {
                                                   builder: (context,
                                                       dfrProvider, child) {
                                                     return Text(
-                                                      "${dfrProvider.dfr} ", // Display the DFR value here
+                                                      "${dfrProvider.dfr.toStringAsFixed(2)} ", // Display the DFR value here
                                                       style:
                                                           GoogleFonts.poppins(
                                                         fontSize: 28,
@@ -298,15 +298,6 @@ class _AllState extends State<All> {
                                     children: [
                                       ElevatedButton(
                                         onPressed: () {
-                                          // Deduct 10% of the feed level but ensure it doesn't go below 0
-                                          feedLevelProvider.setFeedLevel(
-                                              (feedLevel * 0.9)
-                                                  .clamp(0, double.infinity));
-                                        },
-                                        child: const Text("-10%"),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
                                           showDialog(
                                             context: context,
                                             builder: (context) =>
@@ -315,14 +306,6 @@ class _AllState extends State<All> {
                                         },
                                         child: Text(
                                             "Insert New ABW and Stocking Density"),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          // Add 10% to the feed level
-                                          feedLevelProvider
-                                              .setFeedLevel(feedLevel * 1.1);
-                                        },
-                                        child: const Text("+10%"),
                                       ),
                                     ],
                                   ),
@@ -572,7 +555,7 @@ String getColor(double feedLevel) {
 // Method to build reading cards
 Widget _buildReadingCard(String title, double value, double optimumMin,
     double optimumMax, double warningMargin, String description, String s) {
-  String valueParameter = value.toStringAsFixed(1);
+  String valueParameter = value.toStringAsFixed(2);
   return Card(
     color:
         _determineBackgroundColor(value, optimumMin, optimumMax, warningMargin),

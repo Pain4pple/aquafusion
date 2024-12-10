@@ -23,7 +23,10 @@ dependencies:
   printing: ^5.13.4
   syncfusion_flutter_charts: ^27.2.5
   flutter_svg: ^2.0.16
-  
+  csv: ^6.0.0
+  flutter_local_notifications: ^18.0.1
+  firebase_messaging: ^15.1.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,3 +36,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/fonts/poppins.ttf
