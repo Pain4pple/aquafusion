@@ -1,8 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mqtt_client/mqtt_browser_client.dart';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:aquafusion/services/mqtt_service.dart';
 
 class MQTTStreamService {
@@ -31,6 +28,8 @@ class MQTTStreamService {
   final _oxygenController = StreamController<double>.broadcast();
   final _turbidityController = StreamController<double>.broadcast();
   final _salinityController = StreamController<double>.broadcast();
+  final _trendController = StreamController<List<FlSpot>>.broadcast();
+
 
   // Getters for streams
   Stream<double> get feedLevelStream => _feedLevelController.stream;
@@ -52,7 +51,6 @@ class MQTTStreamService {
       _feedLevelController.sink.add(feedLevel); // Add to the stream
     });
 
-    // Start additional topic subscriptions
     maintenanceSubscription = MQTTClientWrapper().maintenanceStream.listen((message) {
       String maintenanceMessage = message.toString();
       _maintenanceController.sink.add(maintenanceMessage); // Add to the stream
@@ -130,4 +128,12 @@ class MQTTStreamService {
     _turbidityController.close();
     _salinityController.close();
   }
+
+  // Method to publish message to a topic
+  void publishMessage(String topic, String message, bool retain) {
+    MQTTClientWrapper().publishMessage(topic, message, retain);
+  }
+}
+
+class FlSpot {
 }

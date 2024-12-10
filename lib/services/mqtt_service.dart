@@ -164,6 +164,14 @@ class MQTTClientWrapper {
     };
   }
 
+    void publishMessage(String topic, String message, bool retain) {
+    final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
+    builder.addString(message);
+
+    print('Publishing message "$message" to topic $topic');
+    client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload!, retain: retain);
+  }
+
   void _onSubscribed(String topic) {
     print('Subscription confirmed for topic $topic');
     subscriptionState = MqttSubscriptionState.SUBSCRIBED;

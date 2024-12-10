@@ -16,6 +16,9 @@ import 'package:aquafusion/screens/home/components/gauges/pHGauge.dart';
 import 'package:aquafusion/screens/home/components/linegraphs/pHLineGraph.dart';
 
 class Water extends StatefulWidget {
+  final String? species;  // Define species here
+
+  Water({required this.species});
   @override
   _WaterState createState() => _WaterState();
 }
