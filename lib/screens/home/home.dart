@@ -1,4 +1,5 @@
 import 'package:aquafusion/screens/home/components/logout.dart';
+import 'package:aquafusion/screens/home/components/schedule_editor.dart';
 import 'package:aquafusion/services/auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -45,7 +46,7 @@ class _HomeState extends State<Home> {
   // Pages for navigation
   final List<Widget> _pages = [
     const DashboardScreen(),
-    FeedingScheduleScreen(),
+    ScheduleEditor(),
     Exportreport(),
     // DevMode(),
     SettingsScreen(),
