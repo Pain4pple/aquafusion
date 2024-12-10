@@ -9,199 +9,104 @@ import 'package:aquafusion/services/providers/temp_provider.dart';
 import 'package:aquafusion/services/providers/turbidity_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
+import 'package:aquafusion/services/mqtt_service.dart';
 import 'package:aquafusion/screens/home/components/gauges/pHGauge.dart';
 import 'package:aquafusion/screens/home/components/linegraphs/pHLineGraph.dart';
 
 class Water extends StatefulWidget {
-  final String? species;
-
-  Water({required this.species});
-
   @override
   _WaterState createState() => _WaterState();
 }
 
-class _WaterState extends State<Water> {
+class _WaterState extends State<Water> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
-    final pHprovider = Provider.of<pHProvider>(context, listen: false);
-    pHprovider.fetchOptimumParameters(widget.species);
+    _tabController = TabController(length: 2, vsync: this);
+
+    // Initialize MQTT client
+    final mqttWrapper = Provider.of<MQTTClientWrapper>(context, listen: false);
+    mqttWrapper.prepareMqttClient(); // Prepare MQTT client
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xfff0f4ff),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Water Quality Readings",
-                style: GoogleFonts.poppins(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xff202976))),
-            const SizedBox(height: 25),
-
-            // Wrap the Row with a Wrap widget for responsive design
-            Wrap(
-              spacing: 16.0, // Space between the children in the wrap
-
-              runSpacing: 16.0, // Space between the rows
-              children: [
-                // pH
-                Row(
-                  children: [
-                    Expanded(
-                      child: Consumer<pHProvider>(
-                          builder: (context, pHProvider, child) {
-                        double pH = pHProvider.pH;
-                        final optimumParam = pHProvider.optimumParameter;
-                        double optimumMin = optimumParam?.optimumMin ?? 6.5;
-                        double optimumMax = optimumParam?.optimumMax ?? 9.0;
-                        return _buildReadingCard(
-                          "pH",
-                          pH,
-                          optimumMin,
-                          optimumMax,
-                          PHGauge(
-                            pH: pH,
-                            optimumMin: optimumMin,
-                            optimumMax: optimumMax,
-                          ),
-                        );
-                      }),
-                    ),
-
-                    // Turbidity
-                    Expanded(
-                      child: Consumer<turbidityProvider>(
-                          builder: (context, turbidityProvider, child) {
-                        double turbidity = turbidityProvider.turbidity;
-                        final optimumParam = turbidityProvider.optimumParameter;
-                        double optimumMin = optimumParam?.optimumMin ?? 0.0;
-                        double optimumMax = optimumParam?.optimumMax ?? 25.0;
-                        return _buildReadingCard(
-                          "Turbidity (NTU)",
-                          turbidity,
-                          optimumMin,
-                          optimumMax,
-                          turbidityGauge(
-                            parameter_value: turbidity,
-                            optimumMin: optimumMin,
-                            optimumMax: optimumMax,
-                          ),
-                        );
-                      }),
-                    ),
-                    Expanded(
-                      child: Consumer<salinityProvider>(
-                          builder: (context, salinityProvider, child) {
-                        double salinity = salinityProvider.salinity;
-                        final optimumParam = salinityProvider.optimumParameter;
-                        double optimumMin = optimumParam?.optimumMin ?? 0.0;
-                        double optimumMax = optimumParam?.optimumMax ?? 5.0;
-                        return _buildReadingCard(
-                          "Salinity (ppt)",
-                          salinity,
-                          optimumMin,
-                          optimumMax,
-                          salinityGauge(
-                            parameter_value: salinity,
-                            optimumMin: optimumMin,
-                            optimumMax: optimumMax,
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
-                ),
-
-                // Salinity
-                Row(
-                  children: [
-                    // Dissolved Oxygen
-                    Expanded(
-                      child: Consumer<oxygenProvider>(
-                          builder: (context, oxygenProvider, child) {
-                        final optimumParam = oxygenProvider.optimumParameter;
-                        double dissolvedOxygen = oxygenProvider.oxygen;
-                        double optimumMin = optimumParam?.optimumMin ?? 5.0;
-                        double optimumMax = optimumParam?.optimumMax ?? 10.0;
-                        return _buildReadingCard(
-                          "Dissolved Oxygen (ppm)",
-                          dissolvedOxygen,
-                          optimumMin,
-                          optimumMax,
-                          oxygenGauge(
-                            parameter_value: dissolvedOxygen,
-                            optimumMin: optimumMin,
-                            optimumMax: optimumMax,
-                          ),
-                        );
-                      }),
-                    ),
-                    // Temperature
-                    Expanded(
-                      child: Consumer<tempProvider>(
-                          builder: (context, tempProvider, child) {
-                        double temperature = tempProvider.temp;
-                        final optimumParam = tempProvider.optimumParameter;
-                        double optimumMin = optimumParam?.optimumMin ?? 28.0;
-                        double optimumMax = optimumParam?.optimumMax ?? 32.0;
-                        return _buildReadingCard(
-                          "Temperature (°C)",
-                          temperature,
-                          optimumMin,
-                          optimumMax,
-                          tempGauge(
-                            parameter_value: temperature,
-                            optimumMin: optimumMin,
-                            optimumMax: optimumMax,
-                          ),
-                        );
-                      }),
-                    ),
-                    
-                    const Expanded(
-                      child: Row()
-                    )
-                  ],
-                ),
-              ],
-            ),
+      appBar: AppBar(
+        title: Text("Water Quality Trends"),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(icon: Icon(Icons.show_chart), text: "Line Graph"),
+            Tab(icon: Icon(Icons.speed), text: "Gauges"),
           ],
         ),
       ),
-    );
-  }
-}
-
-Widget _buildReadingCard(
-    String parameterName, double value, double min, double max, Widget gauge) {
-  return Card(
-    color: Color(0xfffeffff),
-    elevation: 0,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    margin: EdgeInsets.all(10),
-    child: Padding(
-      padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          Text(parameterName,
-              style: GoogleFonts.poppins(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xff202976))),
-          gauge,
+          _buildLineGraphTab(),
+          _buildGaugesTab(),
         ],
       ),
-    ),
-  );
+    );
+  }
+
+  // Updated _buildLineGraphTab function
+  Widget _buildLineGraphTab() {
+    final mqttWrapper = Provider.of<MQTTClientWrapper>(context);
+
+    return StreamBuilder<List<FlSpot>>(
+      stream: mqttWrapper.trendStream, // Listen to the trendStream (List<FlSpot>)
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text("No data available."));
+        }
+
+        final data = snapshot.data!;
+
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: LineChart(
+            LineChartData(
+              lineBarsData: [
+                LineChartBarData(
+                  spots: data, // Use the FlSpot data from the stream
+                  isCurved: true,
+                  color: (Colors.blue),
+                  barWidth: 4,
+                  isStrokeCapRound: true,
+                  belowBarData: BarAreaData(show: false),
+                ),
+              ],
+              titlesData: FlTitlesData(
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: true),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: true),
+                ),
+              ),
+              borderData: FlBorderData(show: true),
+              gridData: FlGridData(show: true),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  Widget _buildGaugesTab() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          PHGauge(pH: 7.2, optimumMin: 6.5, optimumMax: 9.0), // Example gauge
+          // Add other gauges as needed
+        ],
+      ),
+    );
+  }
 }
