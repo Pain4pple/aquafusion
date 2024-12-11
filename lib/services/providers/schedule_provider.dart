@@ -9,6 +9,7 @@ class scheduleProvider with ChangeNotifier {
   scheduleProvider(this._mqttStreamService) {
     // Listen to MQTT schedule updates
     _mqttStreamService.scheduleStream.listen((schedule) {
+      print("This is the current schedule: $schedule");
       _schedule = schedule;
       _schedules = _schedule.split(',').map((s) => s.trim()).toList();
       notifyListeners(); // Notify UI to rebuild

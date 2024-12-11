@@ -9,7 +9,7 @@ class ScheduleEditor extends StatelessWidget {
   void publishToMQTT(String data) {
     // Publish using MQTT Singleton
     final mqttSingleton = MQTTClientWrapper();
-    mqttSingleton.publishMessage('aquafusion/001/command/new_sched', data, true);
+    mqttSingleton.publishMessage('aquafusion/001/command/new_sched', data, false);
     print('Published: $data');
   }
 
