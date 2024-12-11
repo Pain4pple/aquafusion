@@ -1,9 +1,9 @@
 import 'package:aquafusion/models/optimum_parameters.dart';
-import 'package:aquafusion/screens/home/components/linegraphs/oxygenLineGraph.dart';
+// import 'package:aquafusion/screens/home/components/linegraphs/oxygenLineGraph.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:aquafusion/services/mqtt_stream_service.dart'; // Import the service
-
+import 'package:aquafusion/screens/home/components/chart_data.dart';
 // Provider class to manage oxygen data and optimum range
 class oxygenProvider with ChangeNotifier {
   double _oxygen = 0.0;
@@ -14,12 +14,14 @@ class oxygenProvider with ChangeNotifier {
   oxygenProvider(this._mqttStreamService) {
     _mqttStreamService.oxygenStream.listen((oxygen) {
       _oxygen = oxygen;
+      _oxygenHistory.add(ChartData(DateTime.now(), oxygen)); // Add new data to history
+      if (_oxygenHistory.length > 50) _oxygenHistory.removeAt(0); // Limit history size
+      print("Oxygen Data: $_oxygen"); // Debugging line to check data flow
       notifyListeners();
     });
   }
 
   double get oxygen => _oxygen;
-
   List<ChartData> get oxygenHistory => _oxygenHistory;
 
   OptimumParameter? get optimumParameter => _optimumParameter;

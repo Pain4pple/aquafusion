@@ -1,9 +1,9 @@
 import 'package:aquafusion/models/optimum_parameters.dart';
-import 'package:aquafusion/screens/home/components/linegraphs/tempLineGraph.dart';
+// import 'package:aquafusion/screens/home/components/linegraphs/tempLineGraph.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:aquafusion/services/mqtt_stream_service.dart'; // Import the service
-
+import 'package:aquafusion/screens/home/components/chart_data.dart';
 // Provider class to manage temp data and optimum range
 class tempProvider with ChangeNotifier {
   double _temp = 0.0;
@@ -14,12 +14,14 @@ class tempProvider with ChangeNotifier {
   tempProvider(this._mqttStreamService) {
     _mqttStreamService.tempStream.listen((temp) {
       _temp = temp;
+      _tempHistory.add(ChartData(DateTime.now(), temp)); // Add new data to history
+      if (_tempHistory.length > 50) _tempHistory.removeAt(0); // Limit history size
+      print("Temperature Data: $_temp"); // Debugging line to check data flow
       notifyListeners();
     });
   }
 
   double get temp => _temp;
-
   List<ChartData> get tempHistory => _tempHistory;
 
   OptimumParameter? get optimumParameter => _optimumParameter;
