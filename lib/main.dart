@@ -11,6 +11,7 @@ import 'package:aquafusion/services/providers/dfr_provider.dart';
 import 'package:aquafusion/services/providers/pH_provider.dart';
 import 'package:aquafusion/services/providers/salinity_provider.dart';
 import 'package:aquafusion/services/providers/schedule_provider.dart';
+import 'package:aquafusion/services/providers/water_provider.dart';
 import 'package:aquafusion/services/providers/temp_provider.dart';
 import 'package:aquafusion/services/providers/turbidity_provider.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ Future <void> main()async{
         ChangeNotifierProvider(create: (context) => turbidityProvider(mqttService)),
         ChangeNotifierProvider(create: (context) => salinityProvider(mqttService)),
         ChangeNotifierProvider(create: (context) => oxygenProvider(mqttService)),
+        ChangeNotifierProvider(create: (context) => WaterProvider(mqttService)),
         ChangeNotifierProvider(create: (context) => tempProvider(mqttService)),
       ],
       child: MyApp(mqttService: mqttService),

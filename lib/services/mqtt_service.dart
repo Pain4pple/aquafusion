@@ -36,6 +36,11 @@ class MQTTClientWrapper {
   final StreamController<String> _oxygenController = StreamController<String>.broadcast();
   final StreamController<String> _turbidityController = StreamController<String>.broadcast();
   final StreamController<String> _salinityController = StreamController<String>.broadcast();
+  final StreamController<String> _waterController = StreamController<String>.broadcast();
+  final StreamController<String> _overallController = StreamController<String>.broadcast();
+  final StreamController<String> _estimatedDOCController = StreamController<String>.broadcast();
+  final StreamController<String> _estimatedABWController = StreamController<String>.broadcast();
+  final StreamController<String> _dividedFeedingController = StreamController<String>.broadcast();
   
 
   Stream<String> get maintenanceStream => _maintenanceController.stream;
@@ -51,6 +56,11 @@ class MQTTClientWrapper {
   Stream<String> get oxygenStream => _oxygenController.stream;
   Stream<String> get turbidityStream => _turbidityController.stream;
   Stream<String> get salinityStream => _salinityController.stream;
+  Stream<String> get waterStatusStream => _waterController.stream;
+  Stream<String> get overallWaterStatusStream => _overallController.stream;
+  Stream<String> get docStream => _estimatedDOCController.stream;
+  Stream<String> get abwStream => _estimatedABWController.stream;
+  Stream<String> get feedAmountPerFeedingStream => _dividedFeedingController.stream;
   
 
   MQTTClientWrapper._internal();
@@ -86,6 +96,11 @@ class MQTTClientWrapper {
       _subscribeToTopic('aquafusion/001/sensor/water/DO');
       _subscribeToTopic('aquafusion/001/sensor/water/salinity');
       _subscribeToTopic('aquafusion/001/sensor/water/turbidity');
+      _subscribeToTopic('aquafusion/001/water/water_status');
+      _subscribeToTopic('aquafusion/001/water/overall_water_status');
+      _subscribeToTopic('aquafusion/001/water/feed_amount_per_feeding');
+      _subscribeToTopic('aquafusion/001/water/doc');
+      _subscribeToTopic('aquafusion/001/water/estimated_abw');
 
       _publishMessage('aquafusion/001/test', 'Hello, this is Flutter', false);
     } catch (e) {
@@ -173,6 +188,11 @@ class MQTTClientWrapper {
       'aquafusion/001/feeder/feed_amount': _dfrController,
       'aquafusion/001/feeder/schedule': _scheduleController,
       'aquafusion/001/maintenance': _maintenanceController,
+      'aquafusion/001/water/water_status': _waterController,
+      'aquafusion/001/water/overall_water_status': _overallController,
+      'aquafusion/001/water/feed_amount_per_feeding':_dividedFeedingController,
+      'aquafusion/001/water/doc':_estimatedDOCController,
+      'aquafusion/001/water/estimated_abw':_estimatedABWController
     };
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {

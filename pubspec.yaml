@@ -26,7 +26,6 @@ dependencies:
   csv: ^6.0.0
   flutter_local_notifications: ^18.0.1
   firebase_messaging: ^15.1.6
-  dependencies:
 
 dev_dependencies:
   flutter_test:

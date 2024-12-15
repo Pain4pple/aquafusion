@@ -55,8 +55,8 @@ class _WaterState extends State<Water> with SingleTickerProviderStateMixin {
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildLineGraphTab(),
           _buildGaugesTab(),
+          _buildLineGraphTab(),
         ],
       ),
     );

@@ -11,6 +11,7 @@ import 'package:aquafusion/services/providers/pH_provider.dart';
 import 'package:aquafusion/services/providers/salinity_provider.dart';
 import 'package:aquafusion/services/providers/temp_provider.dart';
 import 'package:aquafusion/services/providers/turbidity_provider.dart';
+import 'package:aquafusion/services/providers/water_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -230,6 +231,7 @@ class _AllState extends State<All> {
                                                 ],
                                               ),
                                               Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     "${feedLevel.toStringAsFixed(1)}%",
@@ -240,6 +242,12 @@ class _AllState extends State<All> {
                                                         color:
                                                             Color(0xff202976)),
                                                   ),
+                                                  Consumer<WaterProvider>(
+                                                    builder: (context, waterProvider, child){
+                                                    String currentFeedStatus = waterProvider.waterStatus;
+                                                     return Text(
+                                                      "Feeding Status: $currentFeedStatus"
+                                                    );}),
                                                 ],
                                               ),
                                             ],
@@ -322,16 +330,20 @@ class _AllState extends State<All> {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            _buildStatusCard(
-                              context: context,
-                              title: "Water Quality Monitoring",
-                              status: waterStatus,
-                              icon: Icons.water_drop,
-                              iconColor: Colors.blue,
-                              gradientColors: [
-                                Color(0xFF95C9FF),
-                                Color(0xFFCAEFFF)
-                              ],
+                            Consumer<WaterProvider>(
+                              builder: (context, waterProvider, child) {
+                              String status = waterProvider.overallWaterStatus;
+                              return _buildStatusCard(
+                                context: context,
+                                title: "Water Quality Monitoring",
+                                status: status,
+                                icon: Icons.water_drop,
+                                iconColor: Colors.blue,
+                                gradientColors: [
+                                  Color(0xFF95C9FF),
+                                  Color(0xFFCAEFFF)
+                                ],
+                              );}
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -610,7 +622,7 @@ Color _determineBackgroundColor(
     return const Color.fromARGB(255, 255, 255, 255); // Great
   } else if (value >= (optimumMin - warningMargin) && value < optimumMin ||
       value > optimumMax && value <= (optimumMax + warningMargin)) {
-    return Color.fromARGB(255, 255, 250, 238); // Borderline
+    return Color.fromARGB(255, 255, 203, 83); // Borderline
   } else if (value >= (optimumMin - 2 * warningMargin) &&
           value < (optimumMin - warningMargin) ||
       value > (optimumMax + warningMargin) &&

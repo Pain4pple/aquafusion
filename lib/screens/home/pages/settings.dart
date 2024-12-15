@@ -1,5 +1,6 @@
 import 'dart:convert'; // Import the dart:convert library for JSON encoding
 import 'package:aquafusion/prompts/manual_prompt.dart';
+import 'package:aquafusion/prompts/skip_doc.dart';
 import 'package:aquafusion/services/auth.dart';
 import 'package:aquafusion/services/mqtt_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -115,6 +116,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           );
                         },
                         child: const Text("Manual Feed"),
+                      ),
+                                  SizedBox(height: 16),
+                       ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                SkipDOC(),
+                          );
+                        },
+                        child: const Text("Skip Days"),
                       ),
                     ],
                   ),

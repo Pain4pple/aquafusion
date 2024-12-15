@@ -15,6 +15,11 @@ class MQTTStreamService {
   late StreamSubscription oxygenSubscription;
   late StreamSubscription turbiditySubscription;
   late StreamSubscription salinitySubscription;
+  late StreamSubscription overallWaterStatusSubscription;
+  late StreamSubscription waterSubscription;
+  late StreamSubscription docSubscription;
+  late StreamSubscription abwSubscription;
+  late StreamSubscription dividedfeedSubscription;
 
   // Controllers for each topic
   final _feedLevelController = StreamController<double>.broadcast();
@@ -29,7 +34,11 @@ class MQTTStreamService {
   final _turbidityController = StreamController<double>.broadcast();
   final _salinityController = StreamController<double>.broadcast();
   final _trendController = StreamController<List<FlSpot>>.broadcast();
-
+  final _waterStatusController = StreamController<String>.broadcast();
+  final _overallWaterStatusController = StreamController<String>.broadcast();
+  final _dividedFeedingController = StreamController<double>.broadcast();
+  final _estimatedABWController = StreamController<double>.broadcast();
+  final _estimatedDOCController = StreamController<int>.broadcast();
 
   // Getters for streams
   Stream<double> get feedLevelStream => _feedLevelController.stream;
@@ -43,7 +52,11 @@ class MQTTStreamService {
   Stream<double> get oxygenStream => _oxygenController.stream;
   Stream<double> get turbidityStream => _turbidityController.stream;
   Stream<double> get salinityStream => _salinityController.stream;
-
+  Stream<String> get waterStatusStream => _waterStatusController.stream;
+  Stream<String> get overallWaterStatusStream => _overallWaterStatusController.stream;
+  Stream<double> get estimatedABWStream => _estimatedABWController.stream;
+  Stream<int> get docStream => _estimatedDOCController.stream;
+  Stream<double> get feedAmountPerFeedingStream => _dividedFeedingController.stream;
   // Start listening to MQTT topics
   void startListening() {
     feedLevelSubscription = MQTTClientWrapper().feedLevel.listen((message) {
@@ -99,6 +112,29 @@ class MQTTStreamService {
     salinitySubscription = MQTTClientWrapper().salinityStream.listen((message) {
       double salinity = double.tryParse(message.toString()) ?? 0.0;
       _salinityController.sink.add(salinity); // Add to the stream
+    });
+
+    waterSubscription = MQTTClientWrapper().waterStatusStream.listen((message) {
+      _waterStatusController.sink.add(message.toString());
+    });
+
+    // Listen to overall_water_status topic
+    overallWaterStatusSubscription = MQTTClientWrapper().overallWaterStatusStream.listen((message) {
+      _overallWaterStatusController.sink.add(message.toString());
+    });
+
+    docSubscription = MQTTClientWrapper().docStream.listen((message) {
+      double salinity = double.tryParse(message.toString()) ?? 0.0;
+      _salinityController.sink.add(salinity); // Add to the stream
+    });
+
+    abwSubscription = MQTTClientWrapper().abwStream.listen((message) {
+      _waterStatusController.sink.add(message.toString());
+    });
+
+    // Listen to overall_water_status topic
+    dividedfeedSubscription = MQTTClientWrapper().feedAmountPerFeedingStream.listen((message) {
+      _overallWaterStatusController.sink.add(message.toString());
     });
   }
 
