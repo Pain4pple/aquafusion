@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.aquafusion"
+    namespace = "com.fusion.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
