@@ -246,7 +246,10 @@ class _AllState extends State<All> {
                                                     builder: (context, waterProvider, child){
                                                     String currentFeedStatus = waterProvider.waterStatus;
                                                      return Text(
-                                                      "Feeding Status: $currentFeedStatus"
+                                                      "Feeding Status: $currentFeedStatus",
+                                                      softWrap: true, // Allows wrapping
+                                                      overflow: TextOverflow.ellipsis, // Optional: adds "..." if text still overflows
+                                                      
                                                     );}),
                                                 ],
                                               ),
@@ -330,21 +333,17 @@ class _AllState extends State<All> {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Consumer<WaterProvider>(
-                              builder: (context, waterProvider, child) {
-                              String status = waterProvider.overallWaterStatus;
-                              return _buildStatusCard(
+                             _buildStatusCard(
                                 context: context,
                                 title: "Water Quality Monitoring",
-                                status: status,
+                                status: waterStatus,
                                 icon: Icons.water_drop,
                                 iconColor: Colors.blue,
                                 gradientColors: [
                                   Color(0xFF95C9FF),
                                   Color(0xFFCAEFFF)
                                 ],
-                              );}
-                            ),
+                              ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -367,6 +366,12 @@ class _AllState extends State<All> {
                                                 pHRange['optimumMin'] ?? 6.5;
                                             double optimumMax =
                                                 pHRange['optimumMax'] ?? 9.0;
+                                            if(pH > optimumMax){
+                                              waterStatus = "pH is too high";
+                                            }
+                                            else if (pH < optimumMin){
+                                              waterStatus = "pH is too low";
+                                            }
                                             return _buildReadingCard(
                                                 "pH",
                                                 pH,
@@ -389,9 +394,12 @@ class _AllState extends State<All> {
                                             double turbidity =
                                                 turbidityProvider.turbidity;
                                             double optimumMin =
-                                                pHRange['optimumMin'] ?? 0.0;
+                                                turbidityRange['optimumMin'] ?? 0.0;
                                             double optimumMax =
-                                                pHRange['optimumMax'] ?? 25.0;
+                                            turbidityRange['optimumMax'] ?? 25.0;
+                                            if(turbidity > optimumMax){
+                                              waterStatus = "Turbidity is too high";
+                                            }
                                             return _buildReadingCard(
                                                 "Turbidity",
                                                 turbidity,
@@ -423,6 +431,12 @@ class _AllState extends State<All> {
                                             double optimumMax =
                                                 salinityRange['optimumMax'] ??
                                                     5.0;
+                                            if(salinity > optimumMax){
+                                              waterStatus = "Salinity is too high";
+                                            }
+                                            else if (salinity < optimumMin){
+                                              waterStatus = "Salinity is too low";
+                                            }
                                             return _buildReadingCard(
                                                 "Salinity",
                                                 salinity,
@@ -448,6 +462,12 @@ class _AllState extends State<All> {
                                                 doRange['optimumMin'] ?? 5.0;
                                             double optimumMax =
                                                 doRange['optimumMax'] ?? 10.0;
+                                            if(dissolvedOxygen > optimumMax){
+                                              waterStatus = "Dissolved Oxygen is too high";
+                                            }
+                                            else if (dissolvedOxygen < optimumMin){
+                                              waterStatus = "Dissolved Oxygen is too low";
+                                            }
                                             return _buildReadingCard(
                                                 "Dissolved Oxygen",
                                                 dissolvedOxygen,
@@ -477,6 +497,12 @@ class _AllState extends State<All> {
                                                 tempRange['optimumMin'] ?? 28.0;
                                             double optimumMax =
                                                 tempRange['optimumMax'] ?? 32.0;
+                                            if(temperature > optimumMax){
+                                              waterStatus = "Temperature is too high";
+                                            }
+                                            else if (temperature < optimumMin){
+                                              waterStatus = "Temperature is too low";
+                                            }
                                             return _buildReadingCard(
                                                 "Temperature",
                                                 temperature,

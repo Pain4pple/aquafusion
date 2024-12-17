@@ -217,7 +217,7 @@ void initState() {
                           List<WaterQualityReport> reports = await fetchDailyAverages(uid, selectedDateRange!);
                           await generatePDFReport(reports);
                         } else {
-                          List<FeedReport> feedingLogs = await fetchDailyFeedAverages(uid, selectedDateRange!);
+                          List<FeedLog> feedingLogs = await fetchFeedLogs(uid, selectedDateRange!);
                           await generatePDFReportFromLogs(feedingLogs);
                         }
                       } else {
@@ -351,7 +351,7 @@ void initState() {
      showDialogMessage(context, "PDF saved to ${file.path}");
   }
 
-  Future<void> generatePDFReportFromLogs(List<FeedReport> logs) async {
+  Future<void> generatePDFReportFromLogs(List<FeedLog> logs) async {
     final pdf = pw.Document();
     final fontData = await rootBundle.load('assets/fonts/poppins.ttf');
     final ttf = pw.Font.ttf(fontData);
@@ -364,12 +364,13 @@ void initState() {
             pw.Text('Feed Usage Report', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
             pw.SizedBox(height: 20),
             pw.TableHelper.fromTextArray(
-              headers: ['Timestamp', 'Method', 'Amount'],
-              data: logs.map((log) => [
-                    log.day,
-                    log.method,
-                    log.amount.toString(),
-                  ]).toList(),
+            headers: ['Timestamp', 'Target Feed (g)', 'Actual Dispensed (g)', 'Method'],
+            data: logs.map((log) => [
+              log.timestamp,
+              log.targetFeed.toStringAsFixed(2),
+              log.actualDispensed.toStringAsFixed(2),
+              log.method,
+            ]).toList(),
             ),
           ],
         ),
