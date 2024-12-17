@@ -1,33 +1,34 @@
-import 'package:aquafusion/screens/authenticate/forgot_pass.dart';
 import 'package:flutter/material.dart';
-import 'package:aquafusion/services/auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:aquafusion/services/auth.dart';
 
 class SignIn extends StatefulWidget {
   final Function(String) toggleView;
   const SignIn({super.key, required this.toggleView});
+
   @override
   State<SignIn> createState() => _SignInState();
 }
 
 class _SignInState extends State<SignIn> {
-
   final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
 
-  String email = '';
-  String password = '';
+  String phoneNumber = '';
+  String smsCode = '';
+  String verificationId = '';
+  bool codeSent = false;
   String error = '';
 
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-            Positioned.fill(
+          Positioned.fill(
             child: Image.asset(
-              'assets/images/backgroundlogin.png', 
-              fit: BoxFit.cover,     
+              'assets/images/backgroundlogin.png',
+              fit: BoxFit.cover,
             ),
           ),
           Center(
@@ -41,156 +42,143 @@ class _SignInState extends State<SignIn> {
               child: Padding(
                 padding: const EdgeInsets.all(24),
                 child: Form(
-                key:_formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 18),
-                    Center(
-                      child: Text(
-                        "AquaFusion",
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xff202976),
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 18),
+                      Center(
+                        child: Text(
+                          "AquaFusion",
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xff202976),
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: const TextStyle(
-                          color: Color(0xff7fbbe9), 
-                          fontWeight: FontWeight.w400,
-                        ),      
-                        hintText: 'Enter your email',
-                        hintStyle: const TextStyle(
-                          color: Color(0xff7fbbe9), 
-                          fontWeight: FontWeight.w400, 
-                        ),                    
-                        prefixIcon: const Icon(Icons.email, color: Colors.blue),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Email is required';
-                        }
-                        if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                          return 'Please enter a valid email address';
-                        }
-                        return null;
-                      },
-                      onChanged: (val){
-                        setState(() {
-                          email = val;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(
-                          color: Color(0xff7fbbe9), 
-                          fontWeight: FontWeight.w400,
-                        ),                    
-                        hintText: 'Enter your password',
-                        hintStyle: const TextStyle(
-                          color: Color(0xff7fbbe9), 
-                          fontWeight: FontWeight.w400, 
-                        ),            
-                        prefixIcon: const Icon(Icons.lock, color: Colors.blue),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
-                        ),
-                      ),
-                      obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty ) {
-                            return 'Password is required';
+                      const SizedBox(height: 24),
+                      !codeSent
+                          ? _buildPhoneInputField()
+                          : _buildOTPInputField(),
+                      const SizedBox(height: 24),
+                      _buildGradientButton(
+                        codeSent ? 'Verify OTP' : 'Send OTP',
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            if (!codeSent) {
+                              // Step 1: Send OTP
+                              await _authService.signInWithPhoneNumber(
+                                phoneNumber,
+                                (verId) {
+                                  setState(() {
+                                    codeSent = true;
+                                    verificationId = verId;
+                                  });
+                                },
+                              );
+                            } else {
+                              // Step 2: Verify OTP
+                              var user = await _authService.verifyOTP(
+                                  verificationId, smsCode);
+                              if (user != null) {
+                                print('User signed in: ${user.uid}');
+                              } else {
+                                setState(() => error = 'Invalid OTP');
+                              }
+                            }
                           }
-                          if(value.length<6){
-                            return 'Password must be 6+ characters long';
-                          }
-                          return null;
                         },
-                      onChanged: (val){
-                        setState(() {
-                          password = val;
-                        });
-                      },
-                    ),
-                  const SizedBox(height: 24),
-                    _buildGradientButton('Sign In', onPressed: () async {
-                      if (_formKey.currentState!.validate()){
-                        dynamic result = await _authService.signInEmailAndPassword(email, password);
-                        if(result==null){
-                          setState(()=> error = 'Invalid credentials');
-                        }
-                      }
-                    }),
-                    const SizedBox(height: 12),
-                    _buildGradientButton('Sign In Anonymously', onPressed: () async{
-                        dynamic result = await _authService.signInAnon();
-                        if (result==null){
-                          print('error signing in');
-                        }else{
-                          print('signed in');
-                          print(result.uid);
-                        }
-                    }, colors: [const Color.fromARGB(158, 184, 236, 255), const Color.fromARGB(171, 134, 159, 206)],textColor: const Color.fromARGB(255, 229, 246, 254)),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                             widget.toggleView('register');
-                          },
-                          child: const Text(
-                            'Create an account',
-                            style: TextStyle(
-                              color: Colors.blue,
-                            ),
+                      ),
+                      const SizedBox(height: 16),
+                      if (error.isNotEmpty)
+                        Text(
+                          error,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      const SizedBox(height: 16),
+                      GestureDetector(
+                        onTap: () {
+                          widget.toggleView('register');
+                        },
+                        child: const Text(
+                          'Create an account',
+                          style: TextStyle(
+                            color: Colors.blue,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                             widget.toggleView('forgotPassword');
-                          },
-                          child: const Text(
-                            'Forgot Password?',
-                            style: TextStyle(
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-
-          )
+          ),
         ],
-      )
+      ),
     );
   }
 
-    Widget _buildGradientButton(String text, {required VoidCallback onPressed, List<Color>? colors, Color? textColor}) {
+  Widget _buildPhoneInputField() {
+    return TextFormField(
+      keyboardType: TextInputType.phone,
+      decoration: InputDecoration(
+        labelText: 'Phone Number',
+        hintText: '+1234567890',
+        prefixIcon: const Icon(Icons.phone, color: Colors.blue),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Phone number is required';
+        }
+        return null;
+      },
+      onChanged: (val) {
+        setState(() {
+          phoneNumber = val;
+        });
+      },
+    );
+  }
+
+  Widget _buildOTPInputField() {
+    return TextFormField(
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: 'OTP',
+        hintText: 'Enter OTP',
+        prefixIcon: const Icon(Icons.sms, color: Colors.blue),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'OTP is required';
+        }
+        return null;
+      },
+      onChanged: (val) {
+        setState(() {
+          smsCode = val;
+        });
+      },
+    );
+  }
+
+  Widget _buildGradientButton(String text,
+      {required VoidCallback onPressed}) {
     return Container(
       width: double.infinity,
       height: 50,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: colors ?? [const Color(0xffb3e8ff), const Color(0xff529cea)],
+        gradient: const LinearGradient(
+          colors: [Color(0xffb3e8ff), Color(0xff529cea)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -204,8 +192,8 @@ class _SignInState extends State<SignIn> {
           child: Center(
             child: Text(
               text,
-              style: TextStyle(
-                color: textColor ?? Colors.white,
+              style: const TextStyle(
+                color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),

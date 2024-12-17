@@ -27,6 +27,56 @@ class AuthService{
   }
 
 
+  Future<void> signInWithPhoneNumber(String phoneNumber, Function(String) codeSentCallback) async {
+    try {
+      await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await _firebaseAuth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print('Verification failed: ${e.message}');
+          throw Exception(e.message);
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          codeSentCallback(verificationId);
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          print('Code auto-retrieval timeout');
+        },
+      );
+    } catch (e) {
+      print('Error: $e');
+      rethrow;
+    }
+  }
+
+  Future<User?> verifyOTP(String verificationId, String smsCode) async {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
+      return userCredential.user;
+    } catch (e) {
+      print('Error verifying OTP: $e');
+      return null;
+    }
+  }
+
+  Future<dynamic> verifyPhoneNumber({required String phoneNumber, String? firstName, String? lastName}) async {
+    try {
+      // Example using Firebase Authentication
+      print("Starting phone verification for $phoneNumber...");
+      // Trigger verification (implement Firebase or other backend logic here)
+    } catch (e) {
+      print('Error during phone verification: $e');
+      return null;
+    }
+  }
+
   //sign in anonymously
   Future signInAnon() async{
     try{
