@@ -131,10 +131,10 @@ class MQTTClientWrapper {
 
   void _setupMqttClient() {
     if (kIsWeb) {
-      client = MqttBrowserClient.withPort('wss://aquafusion-88ayr3.a02.usw2.aws.hivemq.cloud/mqtt', 'flutter_app', 8884);
+      client = MqttBrowserClient.withPort('wss://2577b26ceb134221a22d8d1d904f419e.s1.eu.hivemq.cloud/mqtt', 'flutter_app', 8884);
       print('Setting up MqttBrowserClient for web');
     } else {
-      client = MqttServerClient.withPort('aquafusion-88ayr3.a02.usw2.aws.hivemq.cloud', 'flutter_app', 8883);
+      client = MqttServerClient.withPort('2577b26ceb134221a22d8d1d904f419e.s1.eu.hivemq.cloud', 'flutter_app', 8883);
       (client as MqttServerClient).secure = true;
       try {
         (client as MqttServerClient).securityContext = SecurityContext.defaultContext;
