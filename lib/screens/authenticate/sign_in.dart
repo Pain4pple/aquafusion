@@ -1,6 +1,6 @@
+import 'package:aquafusion/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:aquafusion/services/auth.dart';
 
 class SignIn extends StatefulWidget {
   final Function(String) toggleView;
@@ -15,10 +15,11 @@ class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
 
   String phoneNumber = '';
-  String smsCode = '';
+  String otp = '';
   String verificationId = '';
-  bool codeSent = false;
+  bool isOtpSent = false;
   String error = '';
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,35 +59,80 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      !codeSent
-                          ? _buildPhoneInputField()
-                          : _buildOTPInputField(),
+                      TextFormField(
+                        enabled: !isOtpSent,
+                        decoration: InputDecoration(
+                          labelText: 'Phone Number',
+                          labelStyle: const TextStyle(
+                            color: Color(0xff7fbbe9),
+                            fontWeight: FontWeight.w400,
+                          ),
+                          hintText: 'Enter your phone number',
+                          prefixIcon: const Icon(Icons.phone, color: Colors.blue),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide:
+                                const BorderSide(color: Colors.blue, width: 1.5),
+                          ),
+                        ),
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Phone number is required';
+                          }
+                          return null;
+                        },
+                        onChanged: (val) {
+                          setState(() {
+                            phoneNumber = val;
+                          });
+                        },
+                      ),
+                      if (isOtpSent) ...[
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'OTP',
+                            labelStyle: const TextStyle(
+                              color: Color(0xff7fbbe9),
+                              fontWeight: FontWeight.w400,
+                            ),
+                            hintText: 'Enter OTP',
+                            prefixIcon:
+                                const Icon(Icons.lock, color: Colors.blue),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                  color: Colors.blue, width: 1.5),
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          onChanged: (val) {
+                            setState(() {
+                              otp = val;
+                            });
+                          },
+                        ),
+                      ],
                       const SizedBox(height: 24),
                       _buildGradientButton(
-                        codeSent ? 'Verify OTP' : 'Send OTP',
+                        isOtpSent ? 'Verify OTP' : 'Send OTP',
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            if (!codeSent) {
-                              // Step 1: Send OTP
-                              await _authService.signInWithPhoneNumber(
-                                phoneNumber,
-                                (verId) {
-                                  setState(() {
-                                    codeSent = true;
-                                    verificationId = verId;
-                                  });
-                                },
-                              );
+                            setState(() {
+                              isLoading = true;
+                              error = '';
+                            });
+                            if (isOtpSent) {
+                              // Verify OTP
+                              await _verifyOtp();
                             } else {
-                              // Step 2: Verify OTP
-                              var user = await _authService.verifyOTP(
-                                  verificationId, smsCode);
-                              if (user != null) {
-                                print('User signed in: ${user.uid}');
-                              } else {
-                                setState(() => error = 'Invalid OTP');
-                              }
+                              // Send OTP
+                              await _sendOtp();
                             }
+                            setState(() {
+                              isLoading = false;
+                            });
                           }
                         },
                       ),
@@ -96,7 +142,7 @@ class _SignInState extends State<SignIn> {
                           error,
                           style: const TextStyle(color: Colors.red),
                         ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       GestureDetector(
                         onTap: () {
                           widget.toggleView('register');
@@ -113,72 +159,20 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
-  Widget _buildPhoneInputField() {
-    return TextFormField(
-      keyboardType: TextInputType.phone,
-      decoration: InputDecoration(
-        labelText: 'Phone Number',
-        hintText: '+1234567890',
-        prefixIcon: const Icon(Icons.phone, color: Colors.blue),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Phone number is required';
-        }
-        return null;
-      },
-      onChanged: (val) {
-        setState(() {
-          phoneNumber = val;
-        });
-      },
-    );
-  }
-
-  Widget _buildOTPInputField() {
-    return TextFormField(
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: 'OTP',
-        hintText: 'Enter OTP',
-        prefixIcon: const Icon(Icons.sms, color: Colors.blue),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.blue, width: 1.5),
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'OTP is required';
-        }
-        return null;
-      },
-      onChanged: (val) {
-        setState(() {
-          smsCode = val;
-        });
-      },
-    );
-  }
-
   Widget _buildGradientButton(String text,
-      {required VoidCallback onPressed}) {
+      {required VoidCallback onPressed, List<Color>? colors, Color? textColor}) {
     return Container(
       width: double.infinity,
       height: 50,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xffb3e8ff), Color(0xff529cea)],
+        gradient: LinearGradient(
+          colors: colors ?? [const Color(0xffb3e8ff), const Color(0xff529cea)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -192,8 +186,8 @@ class _SignInState extends State<SignIn> {
           child: Center(
             child: Text(
               text,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: textColor ?? Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -202,5 +196,42 @@ class _SignInState extends State<SignIn> {
         ),
       ),
     );
+  }
+
+  Future<void> _sendOtp() async {
+    await _authService.sendOtp(
+      phoneNumber: phoneNumber,
+      onCodeSent: (verificationId) {
+        setState(() {
+          this.verificationId = verificationId;
+          isOtpSent = true;
+        });
+        print('OTP Sent!');
+      },
+      onError: (errorMessage) {
+        setState(() {
+          error = errorMessage;
+        });
+      },
+    );
+  }
+
+  Future<void> _verifyOtp() async {
+    var user = await _authService.verifyOtpAndRegister(
+      verificationId: verificationId,
+      otp: otp,
+      firstName: '',
+      lastName: '',
+    );
+
+    if (user != null) {
+      print('User signed in: ${user.uid}');
+      // Redirect to the home screen
+      widget.toggleView('home');
+    } else {
+      setState(() {
+        error = 'Invalid OTP. Please try again.';
+      });
+    }
   }
 }

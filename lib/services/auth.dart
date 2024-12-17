@@ -6,6 +6,106 @@ class AuthService{
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+   // Send OTP to the phone number
+   // Send OTP to the phone number
+ // Send OTP to Phone Number
+  Future<void> sendOtp({
+    required String phoneNumber,
+    required Function(String) onCodeSent,
+    required Function(String) onError,
+  }) async {
+    try {
+      await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: '+63$phoneNumber', // Add country code (e.g., +63 for PH)
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Auto-resolve OTP
+          await _firebaseAuth.signInWithCredential(credential);
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          onError(e.message ?? 'Verification failed');
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          onCodeSent(verificationId);
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          onCodeSent(verificationId);
+        },
+      );
+    } catch (e) {
+      onError(e.toString());
+    }
+  }
+
+  // Verify OTP and Register the User
+  Future<User?> verifyOtpAndRegister({
+    required String verificationId,
+    required String otp,
+    required String firstName,
+    required String lastName,
+  }) async {
+    try {
+      // Create credential using the OTP
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otp,
+      );
+
+      // Sign in the user
+      UserCredential result = await _firebaseAuth.signInWithCredential(credential);
+      User? user = result.user;
+
+      if (user != null) {
+        // Save user info to Firestore
+        await _saveUserToFirestore(
+          uid: user.uid,
+          firstName: firstName,
+          lastName: lastName,
+          phoneNumber: user.phoneNumber ?? '',
+        );
+      }
+
+      return user;
+    } catch (e) {
+      print('Error during OTP verification: $e');
+      return null;
+    }
+  }
+
+  // Save user to Firestore
+  Future<void> _saveUserToFirestore({
+    required String uid,
+    required String firstName,
+    required String lastName,
+    required String phoneNumber,
+  }) async {
+    try {
+      await _firestore.collection('users').doc(uid).set({
+        'firstName': firstName.trim(),
+        'lastName': lastName.trim(),
+        'phoneNumber': phoneNumber,
+        'setup': false,
+        'terms': true,
+        'species': '',
+        'lifestage': '',
+        'feedingTable': '',
+        'populationCount': 0,
+        'averageBodyWeight': 0,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      print('User saved to Firestore successfully!');
+    } catch (e) {
+      print('Error saving user to Firestore: $e');
+    }
+  }
+
+    Future<void> updateUserTerms(String uid, bool agreed) async {
+    try {
+      await _firestore.collection('users').doc(uid).update({'term': agreed});
+    } catch (e) {
+      print('Error updating terms: $e');
+    }
+  }
+
   UserModel? _userFromFirebase(User? user){
     return user != null ? UserModel(uid: user.uid) : null;
   }
@@ -26,56 +126,6 @@ class AuthService{
     }
   }
 
-
-  Future<void> signInWithPhoneNumber(String phoneNumber, Function(String) codeSentCallback) async {
-    try {
-      await _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        timeout: const Duration(seconds: 60),
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          await _firebaseAuth.signInWithCredential(credential);
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          print('Verification failed: ${e.message}');
-          throw Exception(e.message);
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          codeSentCallback(verificationId);
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          print('Code auto-retrieval timeout');
-        },
-      );
-    } catch (e) {
-      print('Error: $e');
-      rethrow;
-    }
-  }
-
-  Future<User?> verifyOTP(String verificationId, String smsCode) async {
-    try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: smsCode,
-      );
-      UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
-      return userCredential.user;
-    } catch (e) {
-      print('Error verifying OTP: $e');
-      return null;
-    }
-  }
-
-  Future<dynamic> verifyPhoneNumber({required String phoneNumber, String? firstName, String? lastName}) async {
-    try {
-      // Example using Firebase Authentication
-      print("Starting phone verification for $phoneNumber...");
-      // Trigger verification (implement Firebase or other backend logic here)
-    } catch (e) {
-      print('Error during phone verification: $e');
-      return null;
-    }
-  }
 
   //sign in anonymously
   Future signInAnon() async{
