@@ -1,33 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../services/firestore_service.dart';
 
 class SetupScreen extends StatelessWidget {
-  final TextEditingController _speciesController = TextEditingController();
-  final TextEditingController _lifestageController = TextEditingController();
-  final TextEditingController _stockingDensityController = TextEditingController();
-  final TextEditingController _averageBodyWeightController = TextEditingController();
-  final FirestoreService _firestoreService = FirestoreService();
-
-  void _submitSetupData(BuildContext context) async {
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      final setupData = {
-        'species': _speciesController.text.trim(),
-        'lifestage': _lifestageController.text.trim(),
-        'stockingDensity': double.tryParse(_stockingDensityController.text) ?? 0,
-        'averageBodyWeight': double.tryParse(_averageBodyWeightController.text) ?? 0,
-        'createdAt': Timestamp.now(),
-      };
-
-      await _firestoreService.addSetupData(user.uid, setupData);
-      Navigator.pushNamed(context, '/feeding_table');
-    } else {
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
