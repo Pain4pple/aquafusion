@@ -1,157 +1,91 @@
+import 'dart:io';
+
+import 'package:aquafusion/screens/wrapper.dart';
+import 'package:aquafusion/services/auth.dart';
+import 'package:aquafusion/services/providers/feed_level_provider.dart';
+import 'package:aquafusion/services/mqtt_service.dart';
+import 'package:aquafusion/services/mqtt_stream_service.dart';
+import 'package:aquafusion/services/mqttstream_provider.dart';
+import 'package:aquafusion/services/providers/dO_provider.dart';
+import 'package:aquafusion/services/providers/dfr_provider.dart';
+import 'package:aquafusion/services/providers/pH_provider.dart';
+import 'package:aquafusion/services/providers/salinity_provider.dart';
+import 'package:aquafusion/services/providers/schedule_provider.dart';
+import 'package:aquafusion/services/providers/water_provider.dart';
+import 'package:aquafusion/services/providers/temp_provider.dart';
+import 'package:aquafusion/services/providers/turbidity_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-// Import the pages
-import 'pages/dashboard.dart';
-import 'pages/feedingpage.dart';
-import 'pages/exportreport.dart';
-import 'pages/devmode.dart';
-import 'pages/settings.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'firebase_options.dart';
+import 'package:aquafusion/models/user.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+// ...
+// void main() {
+//   runApp(MyApp());
+// }
+Future <void> main()async{
+  final mqttService = MQTTStreamService();
+  HttpOverrides.global = MyHttpOverrides();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(
+    MultiProvider(
+      providers: [
+        // Add all providers here
+        ChangeNotifierProvider(create: (context) => FeedLevelProvider(mqttService)),
+        ChangeNotifierProvider(create: (context) => dfrProvider(mqttService)),
+        ChangeNotifierProvider(create: (context) => scheduleProvider(mqttService)),
+        ChangeNotifierProvider(create: (context) => pHProvider(mqttService)),
+        ChangeNotifierProvider(create: (context) => turbidityProvider(mqttService)),
+        ChangeNotifierProvider(create: (context) => salinityProvider(mqttService)),
+        ChangeNotifierProvider(create: (context) => oxygenProvider(mqttService)),
+        ChangeNotifierProvider(create: (context) => WaterProvider(mqttService)),
+        ChangeNotifierProvider(create: (context) => tempProvider(mqttService)),
+      ],
+      child: MyApp(mqttService: mqttService),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'AquaFusion',
-      home: HomeScreen(),
-    );
-  }
-}
+  final MQTTClientWrapper mqttClient = MQTTClientWrapper();
+  final MQTTStreamService mqttService;
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int _selectedPageIndex = 0;
-
-  // Pages for navigation
-  final List<Widget> _pages = [
-    DashboardScreen(),
-    FeedingScheduleScreen(),
-    Exportreport(),
-    DevMode(),
-    SettingsScreen(),
-  ];
-
-  void _selectPage(int index) {
-    setState(() {
-      _selectedPageIndex = index;
-    });
-  }
+  MyApp({super.key, required this.mqttService});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: <Widget>[
-          Container(
-            width: 100, 
-             decoration: const BoxDecoration(
-               gradient: LinearGradient(
-               colors: [Color(0xff529cea), Color(0xffa8e0fd)],
-              begin: Alignment.bottomLeft,
-               end: Alignment.topRight,
-            ),
-          ),
-            child: Column(
-              children: <Widget>[
-                 SizedBox(
-                  height: 110,
-                  child: DrawerHeader(
-                    child: Image.asset('assets/images/logo.png')
-                  ),
-                 ),
-
-                _buildNavItem(Icons.dashboard, 'Dashboard', 0),
-                _buildNavItem(FontAwesomeIcons.fish, 'Feeding', 1),
-                _buildNavItem(Icons.note, 'Reports', 2),
-                _buildNavItem(Icons.developer_mode_rounded, 'Dev Mode', 3),
-                _buildNavItem(Icons.settings, 'Settings', 4),
-              ],
-            ),
-          ),
-          
-          Expanded(
-            child: Column(
-              children: [
-                Container(color: Color(0xfffeffff), 
-                child: SizedBox(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text("AquaFusion",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 35,
-                              color: Color(0xff202976),
-                              fontFamily: 'Poppins'
-                              ),
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Text("80%"),
-                                Icon(Icons.battery_4_bar_rounded)
-                              ],
-                            )
-                          ],
-                        ),
-                        Divider(
-                          color: Color(0xff529cea),
-                          thickness: 0.2,
-                        ),
-                        Text("Don Hilario's Fish Farm",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 20,
-                              color: Color(0xff202976),
-                              fontFamily: 'Poppins'
-                              ),
-                            ),
-                      ],
-                    ),
-                  ),
-                ),
-                ),
-                Expanded(child: _pages[_selectedPageIndex])
-              ]
-            )
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String title, int index) {
-    return GestureDetector(
-      onTap: () => _selectPage(index),
-      child: Container(
-        color: _selectedPageIndex == index ? Color(0xff55ccff) : Colors.red.withOpacity(0),
-        padding: EdgeInsets.all(15),
-        width: 100,
-        child: Column(
-          children: <Widget>[
-            Icon(icon, color: Colors.white),
-            SizedBox(width: 16),
-            Text(
-              title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 13,
-              ),
-            ),
-          ],
+    mqttClient.prepareMqttClient();
+    mqttService.startListening();
+    return StreamProvider<UserModel?>.value(
+      initialData: null,
+      value: AuthService().user,
+      child: MaterialApp(
+        title: 'AquaFusion',
+        home: Wrapper(),
+        theme: ThemeData(
+        // Set the default font family to Poppins using Google Fonts
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme,
         ),
       ),
+      )
     );
   }
-
 }
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  }
+}
+

@@ -1,5 +1,5 @@
 name: aquafusion
-description: "A new Flutter project."
+description: "AquaFusion Application"
 publish_to: 'none'
 version: 0.1.0
 
@@ -15,7 +15,19 @@ dependencies:
   mqtt_client: ^10.5.1
   font_awesome_flutter: ^10.7.0
   google_fonts: ^6.2.1
-
+  http: ^1.2.2
+  provider: ^6.1.2
+  syncfusion_flutter_gauges: ^27.2.5
+  fl_chart: ^0.69.0
+  pdf: ^3.11.1
+  printing: ^5.13.4
+  syncfusion_flutter_charts: ^27.2.5
+  flutter_svg: ^2.0.16
+  csv: ^6.0.0
+  flutter_local_notifications: ^18.0.1
+  firebase_messaging: ^15.1.6
+  firebase_ui_auth: ^1.16.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -25,3 +37,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/fonts/poppins.ttf

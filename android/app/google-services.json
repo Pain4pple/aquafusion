@@ -1,8 +1,9 @@
 {
   "project_info": {
     "project_number": "1010922435983",
+    "firebase_url": "https://aquafusion-d0096-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "aquafusion-d0096",
-    "storage_bucket": "aquafusion-d0096.appspot.com"
+    "storage_bucket": "aquafusion-d0096.firebasestorage.app"
   },
   "client": [
     {
@@ -12,7 +13,12 @@
           "package_name": "com.fusion.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1010922435983-muu5a8r94aa7npuqsda4s9c5l3nhffv6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCW6Vt-6kCCM80yBhO-SjVJCCEqbyU9lhY"
@@ -20,7 +26,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1010922435983-muu5a8r94aa7npuqsda4s9c5l3nhffv6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1010922435983-0deuda308lb327liucs2rubsmbjhjrcq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.aquafusion"
+              }
+            }
+          ]
         }
       }
     }
